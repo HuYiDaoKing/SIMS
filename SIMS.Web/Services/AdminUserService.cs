@@ -62,7 +62,26 @@ namespace SIMS.Web.Services
 
             foreach (AdminUser user in users)
             {
+                string departmentname = string.Empty;
+                string majorname = string.Empty;
                 Department department = DepartmentService.Instance.GetById(user.DepartmentId);
+                if (department != null)
+                    departmentname = department.Name;
+
+                list.Add(new AdminUserViewModel { 
+                    Id=user.Id,
+                    Code=user.Code,
+                    Name=user.Name,
+                    Sex=user.Sex,
+                    DepartmentId=user.DepartmentId,
+                    MajorId=user.MajorId,
+                    Passwordsalt=user.Passwordsalt,
+                    Profession=user.Profession,
+                    CreateTime=user.CreateTime,
+                    ModifyTime=user.ModifyTime,
+                    DepartmentName = departmentname,
+                    MajorName=majorname
+                });
             }
             return list;
         }
