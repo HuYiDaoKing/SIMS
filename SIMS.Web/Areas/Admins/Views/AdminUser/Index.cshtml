@@ -1,0 +1,25 @@
+﻿<div class="panel panel-default">
+    @*<input type="hidden" id="hfrole" value="@ViewData["l"]" />*@
+    <div class="panel-heading">
+        <h3 class="panel-title">人员信息管理</h3>
+    </div>
+    <div class="panel-body">
+        <div id="msgInfo"></div>
+        @*<input type="hidden" id="hfid" value="0" />
+            <input type="hidden" id="hftype" value="0" />*@
+        <div class="row">
+            <div class="col-sm-12">
+                <label for="Code">编号： </label>
+                <input type="text" id="Code" />
+
+                <input type="button" value="查询" id="btnQuery" style="margin-left:10px; margin-top:5px;" class="btn btn-secondary btn-sm btn-icon icon-left" />
+                <input type="button" value="新增" onclick="ShowModal();" style="margin-left:10px; margin-top:5px;" class="btn btn-secondary btn-sm btn-icon icon-left" />
+
+            </div>
+        </div>
+        <table class="table table-bordered table-striped" id="_AdminUserTable"></table>
+
+    </div>
+</div>
+
+<script src="~/Scripts/AdminUser/user.js"></script>
