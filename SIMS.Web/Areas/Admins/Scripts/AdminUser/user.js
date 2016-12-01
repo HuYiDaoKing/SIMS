@@ -21,10 +21,10 @@ function InitTable() {
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/Admins/Activity/GetList",
+            "url": "Admins/AdminUser/GetDataTable",
             "type": "POST",
             "data": {
-                ActivityName: $("#ActivityName").val()
+                code: $("#Code").val()
             },
             error: function (e) {
                 alert("异常:" + e.responseText);

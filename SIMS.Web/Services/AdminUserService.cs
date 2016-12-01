@@ -45,16 +45,15 @@ namespace SIMS.Web.Services
         {
             using (var context = new SIMSDbContext())
             {
-                var query = context.AdminUser.FirstOrDefault(c=>c.Code.Equals(code));
+                var query = context.AdminUser.FirstOrDefault(c => c.Code.Equals(code));
                 return query;
             }
         }
 
-        public List<AdminUserViewModel> GetBySomeWhere(string code, int iStart, int iLimit, out int iTotal)
+        public List<AdminUserViewModel> GetBySomeWhere(string code, int iStart, int iLimit)
         {
             List<AdminUserViewModel> list = new List<AdminUserViewModel>();
             var filtered = GetSearchResult(code);
-            iTotal = filtered.Count;
 
             var query = from c in filtered.Skip(iStart).Take(iLimit) select c;
 
@@ -68,22 +67,33 @@ namespace SIMS.Web.Services
                 if (department != null)
                     departmentname = department.Name;
 
-                list.Add(new AdminUserViewModel { 
-                    Id=user.Id,
-                    Code=user.Code,
-                    Name=user.Name,
-                    Sex=user.Sex,
-                    DepartmentId=user.DepartmentId,
-                    MajorId=user.MajorId,
-                    Passwordsalt=user.Passwordsalt,
-                    Profession=user.Profession,
-                    CreateTime=user.CreateTime,
-                    ModifyTime=user.ModifyTime,
+                list.Add(new AdminUserViewModel
+                {
+                    Id = user.Id,
+                    Code = user.Code,
+                    Name = user.Name,
+                    Sex = user.Sex,
+                    DepartmentId = user.DepartmentId,
+                    MajorId = user.MajorId,
+                    Passwordsalt = user.Passwordsalt,
+                    Profession = user.Profession,
+                    CreateTime = user.CreateTime,
+                    ModifyTime = user.ModifyTime,
                     DepartmentName = departmentname,
-                    MajorName=majorname
+                    MajorName = majorname
                 });
             }
             return list;
+        }
+
+        public int GetCount(string code)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                return context.AdminUser
+                    .Where(m => (String.IsNullOrEmpty(code) || m.Code.Equals(code)))
+                    .Count();
+            }
         }
 
         #endregion
@@ -162,18 +172,14 @@ namespace SIMS.Web.Services
         {
             using (var context = new SIMSDbContext())
             {
-                var query = from c in context.AdminUser.ToList()
-                            select c;
-
-                return query
+                return context.AdminUser
                .Where(m => (string.IsNullOrEmpty(code) || m.Name.Contains(code)))
                .OrderByDescending(m => m.CreateTime)
-                    //.ThenByDescending(m => m.Id)
                .ToList<AdminUser>();
             }
         }
 
-        private bool IsExist(string code,int id=0)
+        private bool IsExist(string code, int id = 0)
         {
             bool isExist = false;
             try
@@ -181,26 +187,26 @@ namespace SIMS.Web.Services
                 int iCount = 0;
                 using (var context = new SIMSDbContext())
                 {
-                    string sql =  @"select * from AdminUser where 1=1 ";
+                    string sql = @"select * from AdminUser where 1=1 ";
                     if (id == 0)
                     {
                         sql += "and Code=@Code";
-                        iCount=context.Database.ExecuteSqlCommand(sql, new SqlParameter("@Code",code));
+                        iCount = context.Database.ExecuteSqlCommand(sql, new SqlParameter("@Code", code));
                     }
                     else
                     {
                         sql += "and Code=@Code and Id <> @Id";
-                        iCount=context.Database.ExecuteSqlCommand(sql, 
+                        iCount = context.Database.ExecuteSqlCommand(sql,
                             new SqlParameter("@Code", code),
-                            new SqlParameter("@Id",id));
+                            new SqlParameter("@Id", id));
                     }
                     isExist = iCount > 0 ? true : false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                string msg = string.Format("检测用户工号异常:{0}",ex.Message);
-                LogHelper.Log(LogType.Error,msg);
+                string msg = string.Format("检测用户工号异常:{0}", ex.Message);
+                LogHelper.Log(LogType.Error, msg);
                 //throw ex;
             }
             return isExist;

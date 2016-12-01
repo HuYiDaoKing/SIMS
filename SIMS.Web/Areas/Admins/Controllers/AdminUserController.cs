@@ -1,9 +1,12 @@
 ﻿using SIMS.Web.Areas.Admins.ViewModels;
+using SIMS.Web.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using SIMS.Web.Services;
+using System.Collections;
 
 namespace SIMS.Web.Areas.Admins.Controllers
 {
@@ -16,24 +19,26 @@ namespace SIMS.Web.Areas.Admins.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetList(string code)
+        public JsonResult GetDataTable(string code)
         {
-            int draw = int.Parse(Request.Params["draw"].ToString());
-            int start = int.Parse(Request.Params["start"].ToString());
-            int length = int.Parse(Request.Params["length"].ToString());
+            DataTableParams dtParams = new DataTableParams(this);
+            List<AdminUserViewModel> list = AdminUserService.Instance.GetBySomeWhere(code, dtParams.Start, dtParams.Length);
+            int count = AdminUserService.Instance.GetCount(code);
 
-
-            //ActivityService service = new ActivityService();
-            //List<ActivityViewModel> list = service.GetActivity(ActivityName, BeginTime, EndTime, start, length);
-            
-            List<AdminUserViewModel> list
-
-            int count = service.GetActivityCount(ActivityName, BeginTime, EndTime);
-            return Json(new { draw = draw, recordsTotal = list.Count, recordsFiltered = count, data = list }, JsonRequestBehavior.AllowGet);
-
-            // List<ActivityViewModel> _Filters = list.Skip(start).Take(length).ToList();
-            //return Json(new { draw = draw, recordsTotal = _Filters.Count, recordsFiltered = list.Count, data = _Filters }, JsonRequestBehavior.AllowGet);
+            //return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list }, JsonRequestBehavior.AllowGet);
+            return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
         }
 
+        #region Private
+
+        private Object ToJson(AdminUserViewModel model, DataTableParams dtParams)
+        {
+            var json = model.AsJson() as Hashtable;
+            json.Add("Actions", RenderViewHelper.RenderToString("_Actions", model, dtParams.Controller));
+
+            return json;
+        }
+
+        #endregion
     }
 }

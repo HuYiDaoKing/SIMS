@@ -198,10 +198,14 @@
     <Compile Include="EntityDataModel\StuCourse.cs">
       <DependentUpon>SIMSModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\AccountHelper.cs" />
+    <Compile Include="Helper\DataTableParams.cs" />
+    <Compile Include="Helper\ObjectExtensions.cs" />
+    <Compile Include="Helper\RenderViewHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -1147,7 +1151,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\AdminUser\user.js" />
+    <Content Include="Areas\Admins\Scripts\AdminUser\user.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admins\Views\web.config" />
@@ -1460,6 +1464,7 @@
     </Content>
     <Content Include="Areas\Admins\Views\Account\Login.cshtml" />
     <Content Include="Areas\Admins\Views\AdminUser\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\AdminUser\_Actions.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -1510,7 +1515,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admins\Scripts\" />
     <Folder Include="Areas\Admins\Views\Base\" />
     <Folder Include="Controllers\" />
     <Folder Include="Views\Base\" />
