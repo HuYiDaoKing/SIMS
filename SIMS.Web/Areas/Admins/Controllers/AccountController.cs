@@ -44,15 +44,14 @@ namespace SIMS.Web.Areas.Admins.Controllers
             Session[AccountHashKeys.CurrentAdminUser] = null;
             Session.Remove(AccountHashKeys.CurrentAdminUser);
             ClearClientCookie(AccountHashKeys.AdminUserBrowserCookie);
-
-            return RedirectToAction("login", "login");
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]
-        public ActionResult Login(string strUserName, string strPassword)
+        public ActionResult Login(string strCode, string strPassword)
         {
             var oResult = new Object();
-            if (string.IsNullOrEmpty(strUserName) || string.IsNullOrEmpty(strPassword))
+            if (string.IsNullOrEmpty(strCode) || string.IsNullOrEmpty(strPassword))
             {
                 oResult = new
                 {
@@ -64,7 +63,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
             else
             {
                 //var currentUser = UserService.Instance.GetByAccountId(strUserName.Trim());
-                var currentUser = AdminUserService.Instance.GetByCode(strUserName.Trim());
+                var currentUser = AdminUserService.Instance.GetByCode(strCode.Trim());
                 bool isAdminUserValid = false;
                 if (currentUser != null)
                     isAdminUserValid = currentUser != null && BCrypt.Net.BCrypt.Verify(strPassword, currentUser.Passwordsalt);
@@ -87,7 +86,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     oResult = new
                     {
                         Bresult = true,
-                        Url = "/default/index",
+                        Url = "/Admins/Default/Index",
                         Notice = "成功!"
                     };
                     return Json(oResult, JsonRequestBehavior.AllowGet);

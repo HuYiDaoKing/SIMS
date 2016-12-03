@@ -26,9 +26,9 @@ namespace SIMS.Web.Services
             {
                 _dicProfession = new Dictionary<int, string>();
 
-                _dicProfession.Add(0, "学生");
-                _dicProfession.Add(1, "教师");
-                //_dicStatus.Add(2, "管理员");
+                _dicProfession.Add(0, "管理员");
+                _dicProfession.Add(1, "学生");
+                _dicProfession.Add(2, "教师");
             }
             catch (Exception ex)
             {

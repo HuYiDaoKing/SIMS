@@ -1,4 +1,28 @@
-﻿<!DOCTYPE html>
+﻿@using SIMS.Common;
+@using System.Data.Entity;
+@using SIMS.Web.EntityDataModel;
+@using System.Web.Mvc;
+@{
+    #region 用户验证
+    string username=String.Empty;
+    try
+    {
+        if (this.CurrentAdminUser() == null)
+        {
+            Response.Redirect("/Admins/Login/Index");
+        }
+        AdminUser userInfo = this.CurrentAdminUser() as AdminUser;
+        username= userInfo.Name;
+    }
+    catch
+    {
+
+    }
+
+    #endregion
+
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -282,8 +306,8 @@
                         </a>
                         <ul>
                             <li>
-                                <a href="dashboard-1.html">
-                                    <span class="title">实施人员</span>
+                                <a href="/Admins/AdminUser/Index">
+                                    <span class="title">人员管理</span>
                                 </a>
                             </li>
                             <li>
@@ -611,7 +635,7 @@
                         <a href="#" data-toggle="dropdown">
                             <img src="~/Areas/Admins/assets/images/user-4.png" alt="user-image" class="img-circle img-inline userpic-32" width="28" />
                             <span>
-                                aaa
+                                @username
                                 <i class="fa-angle-down"></i>
                             </span>
                         </a>
@@ -642,7 +666,7 @@
                                     </a>
                                 </li>*@
                             <li class="last">
-                                <a href="/User/LogOff">
+                                <a href="/Admins/Account/Logout">
                                     <i class="fa-lock"></i>
                                     退出
                                 </a>

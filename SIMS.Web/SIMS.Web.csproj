@@ -199,6 +199,7 @@
       <DependentUpon>SIMSModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ObjectExtensions.cs" />
+    <Compile Include="Extensions\WebViewPageExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1465,6 +1466,7 @@
     <Content Include="Areas\Admins\Views\Account\Login.cshtml" />
     <Content Include="Areas\Admins\Views\AdminUser\Index.cshtml" />
     <Content Include="Areas\Admins\Views\AdminUser\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\AdminUser\_UserModalPartial.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

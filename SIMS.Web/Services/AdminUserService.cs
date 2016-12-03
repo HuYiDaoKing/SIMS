@@ -67,6 +67,10 @@ namespace SIMS.Web.Services
                 if (department != null)
                     departmentname = department.Name;
 
+                Major major = MajorService.Instance.GetById(user.MajorId);
+                if (major != null)
+                    majorname = major.Name;
+
                 list.Add(new AdminUserViewModel
                 {
                     Id = user.Id,
@@ -96,9 +100,50 @@ namespace SIMS.Web.Services
             }
         }
 
+        public bool IsExist(string code)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                int count = context.AdminUser
+                    .Where(m => (m.Code.Equals(code)))
+                    .Count();
+
+                return count > 0 ? true : false;
+            }
+        }
+
         #endregion
 
         #region Create
+
+        public bool AddSystemAccount()
+        {
+            bool bRet = true;
+            try
+            {
+                AdminUser user = new AdminUser
+                {
+                    Code = "001",
+                    Name = "admin",
+                    Sex = "M",
+                    DepartmentId=0,
+                    MajorId=0,
+                    Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
+                    Profession = 0,
+                    CreateTime = DateTime.Now,
+                    ModifyTime = DateTime.Now
+                };
+
+                bool isExist = IsExist(user.Code);
+                if (!isExist)
+                    bRet = Create(user);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Log(LogType.Error, string.Format("AddSystemAccount异常:{0}", ex.Message));
+            }
+            return bRet;
+        }
 
         public bool Create(AdminUser oItem)
         {
@@ -173,7 +218,7 @@ namespace SIMS.Web.Services
             using (var context = new SIMSDbContext())
             {
                 return context.AdminUser
-               .Where(m => (string.IsNullOrEmpty(code) || m.Name.Contains(code)))
+               .Where(m => (string.IsNullOrEmpty(code) || m.Code.Contains(code)))
                .OrderByDescending(m => m.CreateTime)
                .ToList<AdminUser>();
             }
