@@ -30,6 +30,26 @@ namespace SIMS.Web.Services
         #region Public
 
         #region Query
+
+        public bool IsExist(int id, string code)
+        {
+            bool isExist = false;
+            using (var context = new SIMSDbContext())
+            {
+                if (id == 0)
+                {
+                    var query = context.Department.FirstOrDefault(c => c.Code.Equals(code));
+                    isExist = null == query ? false : true;
+                }
+                else
+                {
+                    var query = context.Department.FirstOrDefault(c=>c.Code.Equals(code) && c.Id!=id);
+                    isExist = null == query ? false : true;
+                }
+                return isExist;
+            }
+        }
+
         public Department GetById(int? id)
         {
             using (var context = new SIMSDbContext())
@@ -39,14 +59,21 @@ namespace SIMS.Web.Services
             }
         }
 
-        public List<Department> GetBySomeWhere(string strKeyWord, int iStart, int iLimit, out int iTotal)
+        public List<Department> GetBySomeWhere(string name, int iStart, int iLimit)
         {
-            var filtered = GetSearchResult(strKeyWord);
-            iTotal = filtered.Count;
-
+            var filtered = GetSearchResult(name);
             var query = from c in filtered.Skip(iStart).Take(iLimit) select c;
-
             return query.ToList<Department>();
+        }
+
+        public int GetCount(string name)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                return context.AdminUser
+                    .Where(m => (String.IsNullOrEmpty(name) || m.Code.Equals(name)))
+                    .Count();
+            }
         }
 
         #endregion
@@ -121,7 +148,7 @@ namespace SIMS.Web.Services
 
         #region Private
 
-        private List<Department> GetSearchResult(string strKeyWord)
+        private List<Department> GetSearchResult(string name)
         {
             using (var context = new SIMSDbContext())
             {
@@ -129,9 +156,8 @@ namespace SIMS.Web.Services
                             select c;
 
                 return query
-               .Where(m => (string.IsNullOrEmpty(strKeyWord) || m.Name.Contains(strKeyWord)))
+               .Where(m => (string.IsNullOrEmpty(name) || m.Name.Contains(name)))
                .OrderByDescending(m => m.CreateTime)
-                    //.ThenByDescending(m => m.Id)
                .ToList<Department>();
             }
         }

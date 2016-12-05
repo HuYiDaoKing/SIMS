@@ -1,0 +1,56 @@
+﻿
+<div class="modal fade" id="departmentmodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">编辑功能</h4>
+            </div>
+
+            <div class="modal-body" style="margin-top: 10px; margin-bottom:10px;">
+
+                <div class="row" style="display:none;">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Id" class="control-label">ID</label>
+                            <input type="text" class="form-control" id="Id" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Code" class="control-label">编号</label>
+                            <input type="text" class="form-control" id="Code">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Name" class="control-label">名称</label>
+                            <input type="text" class="form-control" id="NName">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="Description" class="control-label">备注：</label>
+                            <textarea class="form-control autogrow" id="Description"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnOperation" onclick="AddOrUpdate();" class="btn btn-info">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,7 @@
 @using System.Web.Mvc;
 @{
     #region 用户验证
-    string username=String.Empty;
+    string username = String.Empty;
     try
     {
         if (this.CurrentAdminUser() == null)
@@ -12,7 +12,7 @@
             Response.Redirect("/Admins/Login/Index");
         }
         AdminUser userInfo = this.CurrentAdminUser() as AdminUser;
-        username= userInfo.Name;
+        username = userInfo.Name;
     }
     catch
     {
@@ -33,7 +33,7 @@
     <meta name="author" content="" />
 
     <title>SIMS</title>
-    <link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">
+    @*<link rel="stylesheet" href="http://fonts.useso.com/css?family=Arimo:400,700,400italic">*@
 
     <link rel="stylesheet" href="~/Areas/Admins/assets/css/fonts/linecons/css/linecons.css">
     <link rel="stylesheet" href="~/Areas/Admins/assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -73,173 +73,11 @@
 </head>
 <body class="page-body">
 
-    <!-- 按钮（begin-Modal） -->
-    <div class="modal fade" id="operationmodal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    <!-- 用户usemodal） -->
+    @Html.Partial("~/Areas/Admins/Views/AdminUser/_UserModalPartial.cshtml")
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">编辑功能</h4>
-                </div>
-
-                <div class="modal-body" style="margin-top: 10px; margin-bottom:10px;">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <div class="form-group">
-                                <label for="txtBtnCode" class="control-label">编码</label>
-
-                                <input type="text" class="form-control" id="txtBtnCode">
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="txtBtnName" class="control-label">名称</label>
-
-                                <input type="text" class="form-control" id="txtBtnName">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" id="btnOperation" class="btn btn-info">保存</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 按钮（end-Modal） -->
-    <!-- 菜单（begin-Modal） -->
-    <div class="modal fade" id="menumodal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">编辑菜单</h4>
-                </div>
-
-                <div class="modal-body" style="margin-top: 10px; margin-bottom:10px;">
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <div class="form-group">
-                                <label for="txtMenuName" class="control-label">名称</label>
-
-                                <input type="text" class="form-control" id="txtMenuName">
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="txtMenuUrl" class="control-label">链接</label>
-
-                                <input type="text" class="form-control" id="txtMenuUrl">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" id="btnMenu" class="btn btn-info">保存</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 菜单（end-Modal） -->
-    <!-- 优惠活动（begin-Modal） -->
-    <div class="modal fade" id="activitymodal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">编辑优惠活动</h4>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="txtActivityName" class="control-label">活动名称</label>
-
-                                <input type="text" class="form-control" id="txtActivityName">
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="txtDiscount" class="control-label">优惠折扣%</label>
-
-                                <input type="text" class="form-control" id="txtDiscount" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')" maxlength="3">
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="txtBeginTime" class="control-label">开始时间</label>
-
-                                <input type="text" class="form-control form_datetime" id="txtBeginTime" data-date-format="dd MM yyyy" readonly>
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <div class="form-group">
-                                <label for="txtEndTime" class="control-label">结束时间</label>
-
-                                <input type="text" class="form-control form_datetime" id="txtEndTime" data-date-format="dd MM yyyy" readonly>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <div class="form-group no-margin">
-                                <label for="txtRemark" class="control-label">备注</label>
-                                <textarea class="form-control autogrow" id="txtRemark" style="max-height:400px;  height:200px;"></textarea>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" id="btnActivity" class="btn btn-info">保存</button>
-                    <button type="button" class="btn btn-white" id="btnActivityClose" data-dismiss="modal">关闭</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 优惠活动（end-Modal） -->
-
-
-
-
-
+    <!-- departmentmodal） -->
+    @Html.Partial("~/Areas/Admins/Views/Department/_DepartmentModalPartial.cshtml")
 
     <div class="page-container">
 
@@ -322,19 +160,26 @@
                             </li>
                         </ul>
                     </li>
-                    <li id="sourceConfig">
-                        <a href="/Admins/Configs/ServiceAreasConfig">
+                    <li>
+                        <a href="#">
                             <i class="linecons-desktop"></i>
-                            <span class="title">服务区域</span>
+                            <span class="title">院系管理</span>
                         </a>
-                        @*<ul>
+                        <ul>
+                            <li>
+                                <a href="/Admins/Department/Index">
+                                    <span class="title">院系管理</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul>
 
-                                <li id="serviceAreasConfig">
-                                    <a href="/Admins/Configs/ServiceAreasConfig">
-                                        <span class="title">服务区域管理</span>
-                                    </a>
-                                </li>
-                            </ul>*@
+                            <li id="serviceAreasConfig">
+                                <a href="/Admins/Configs/ServiceAreasConfig">
+                                    <span class="title">专业管理</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     <li>
                         <a href="/Admins/Activity/Index">
@@ -848,7 +693,6 @@
 
     </div>
 
-
     <div class="page-loading-overlay">
         <div class="loader-2"></div>
     </div>
@@ -902,7 +746,7 @@
     <!-- Imported scripts on this page -->
     <script src="~/Areas/Admins/assets/js/xenon-widgets.js"></script>
     <script src="~/Areas/Admins/assets/js/toastr/toastr.min.js"></script>
-    <script src="~/Areas/Admins/Scripts/_layout.js"></script>
+    @*<script src="~/Areas/Admins/Scripts/_layout.js"></script>*@
     <!-- JavaScripts initializations and stuff -->
     <script src="~/Areas/Admins/assets/js/xenon-custom.js"></script>
 

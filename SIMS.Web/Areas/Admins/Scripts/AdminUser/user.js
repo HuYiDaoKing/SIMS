@@ -9,7 +9,6 @@ jQuery(document).ready(function ($) {
         tbTable.settings()[0].ajax.data = param;
         tbTable.ajax.reload();
     });
-
 });
 
 var table;
@@ -71,4 +70,16 @@ function InitTable() {
             { "data": "Actions", "title": "操作", "sWidth": "15%", "sClass": "text-center" }
         ]
     });
+}
+
+function ShowModal(flag) {
+    if (flag == 0) {
+        //add
+        $('#usermodal .modal-title').html('添加');
+        $('#usermodal').modal('show');
+    } else {
+        //update
+        $('#usermodal .modal-title').html('修改');
+    }
+
 }
