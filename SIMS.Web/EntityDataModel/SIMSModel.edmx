@@ -17,6 +17,7 @@
           <Property Name="MajorId" Type="int" />
           <Property Name="Passwordsalt" Type="varchar(max)" />
           <Property Name="Profession" Type="int" />
+          <Property Name="Grade" Type="varchar" MaxLength="50" />
           <Property Name="CreateTime" Type="datetime" />
           <Property Name="ModifyTime" Type="datetime" />
         </EntityType>
@@ -50,7 +51,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="50" />
-          <Property Name="DepartmentCode" Type="varchar" MaxLength="50" />
+          <Property Name="DepartmentId" Type="int" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Description" Type="varchar" MaxLength="50" />
           <Property Name="CreateTime" Type="datetime" />
@@ -102,24 +103,12 @@
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="ModifyTime" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Major">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DepartmentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="ModifyTime" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityContainer Name="SIMSDbContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Course" EntityType="Self.Course" />
           <EntitySet Name="Department" EntityType="Self.Department" />
-          <EntitySet Name="Major" EntityType="Self.Major" />
           <EntitySet Name="AdminUser" EntityType="SIMSModel.AdminUser" />
           <EntitySet Name="StuCourse" EntityType="SIMSModel.StuCourse" />
+          <EntitySet Name="Major" EntityType="SIMSModel.Major" />
         </EntityContainer>
         <EntityType Name="AdminUser">
           <Key>
@@ -135,6 +124,7 @@
           <Property Name="Profession" Type="Int32" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="ModifyTime" Type="DateTime" Precision="3" />
+          <Property Name="Grade" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="StuCourse">
           <Key>
@@ -144,6 +134,18 @@
           <Property Name="StudentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CourseCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TeacherCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="ModifyTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Major">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DepartmentId" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="ModifyTime" Type="DateTime" Precision="3" />
         </EntityType>
@@ -179,22 +181,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Major">
-            <EntityTypeMapping TypeName="SIMSModel.Major">
-              <MappingFragment StoreEntitySet="Major">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="ModifyTime" ColumnName="ModifyTime" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AdminUser">
             <EntityTypeMapping TypeName="SIMSModel.AdminUser">
               <MappingFragment StoreEntitySet="AdminUser">
+                <ScalarProperty Name="Grade" ColumnName="Grade" />
                 <ScalarProperty Name="ModifyTime" ColumnName="ModifyTime" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="Profession" ColumnName="Profession" />
@@ -216,6 +206,19 @@
                 <ScalarProperty Name="TeacherCode" ColumnName="TeacherCode" />
                 <ScalarProperty Name="CourseCode" ColumnName="CourseCode" />
                 <ScalarProperty Name="StudentCode" ColumnName="StudentCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Major">
+            <EntityTypeMapping TypeName="SIMSModel.Major">
+              <MappingFragment StoreEntitySet="Major">
+                <ScalarProperty Name="ModifyTime" ColumnName="ModifyTime" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

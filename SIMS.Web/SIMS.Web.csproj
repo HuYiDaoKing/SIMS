@@ -166,9 +166,11 @@
     <Compile Include="Areas\Admins\Controllers\BaseController.cs" />
     <Compile Include="Areas\Admins\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Admins\Controllers\DepartmentController.cs" />
+    <Compile Include="Areas\Admins\Controllers\MajorController.cs" />
     <Compile Include="Areas\Admins\Filters\AdminUserAuthentication.cs" />
     <Compile Include="Areas\Admins\Models\LogOnModel.cs" />
     <Compile Include="Areas\Admins\ViewModels\AdminUserViewModel.cs" />
+    <Compile Include="Areas\Admins\ViewModels\MajorViewModel.cs" />
     <Compile Include="EntityDataModel\AdminUser.cs">
       <DependentUpon>SIMSModel.tt</DependentUpon>
     </Compile>
@@ -1138,6 +1140,7 @@
     <Content Include="Areas\Admins\assets\less\other-less\index.html" />
     <Content Include="Areas\Admins\assets\less\xenon-less\index.html" />
     <Content Include="Areas\Admins\Scripts\Department\department.js" />
+    <Content Include="Areas\Admins\Scripts\Major\major.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="EntityDataModel\SIMSModel.Context.tt">
@@ -1472,6 +1475,9 @@
     <Content Include="Areas\Admins\Views\Department\Index.cshtml" />
     <Content Include="Areas\Admins\Views\Department\_Actions.cshtml" />
     <Content Include="Areas\Admins\Views\Department\_DepartmentModalPartial.cshtml" />
+    <Content Include="Areas\Admins\Views\Major\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\Major\_Actions.cshtml" />
+    <None Include="Properties\PublishProfiles\SIMSConfig.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

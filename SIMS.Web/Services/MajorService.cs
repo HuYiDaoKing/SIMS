@@ -6,6 +6,7 @@ using System.Data.Entity;
 using SIMS.Web.EntityDataModel;
 using SIMS.Web.Services;
 using SIMS.Web.Models;
+using SIMS.Web.Areas.Admins.ViewModels;
 
 namespace SIMS.Web.Services
 {
@@ -28,6 +29,26 @@ namespace SIMS.Web.Services
         #region Public
 
         #region Query
+
+        public bool IsExist(int id, int departmentId, string code)
+        {
+            bool isExist = false;
+            using (var context = new SIMSDbContext())
+            {
+                if (id == 0)
+                {
+                    var query = context.Major.FirstOrDefault(c=>c.DepartmentId.Equals(departmentId) && c.Code.Equals(code));
+                    isExist = null == query ? false : true;
+                }
+                else
+                {
+                    var query = context.Major.FirstOrDefault(c => c.Code.Equals(code) && c.DepartmentId.Equals(departmentId) && c.Id != id);
+                    isExist = null == query ? false : true;
+                }
+                return isExist;
+            }
+        }
+
         public Major GetById(int? id)
         {
             using (var context = new SIMSDbContext())
@@ -36,15 +57,47 @@ namespace SIMS.Web.Services
                 return query;
             }
         }
-
-        public List<Major> GetBySomeWhere(string strKeyWord, int iStart, int iLimit, out int iTotal)
+        public List<MajorViewModel> GetBySomeWhere(int departmentId,int iStart, int iLimit)
         {
-            var filtered = GetSearchResult(strKeyWord);
-            iTotal = filtered.Count;
+            List<MajorViewModel> list = new List<MajorViewModel>();
+            var filtered = GetSearchResult(departmentId);
 
             var query = from c in filtered.Skip(iStart).Take(iLimit) select c;
 
-            return query.ToList<Major>();
+            List<Major> majors = query.ToList<Major>();
+            foreach(Major major in majors)
+            {
+                string departmentname = string.Empty;
+                Department department = DepartmentService.Instance.GetById(departmentId);
+                if (department != null)
+                    departmentname = department.Name;
+
+                list.Add(new MajorViewModel
+                {
+                    Id = major.Id,
+                    DepartmentId = departmentId,
+                    Code = major.Code,
+                    Name = major.Name,
+                    Description = major.Description,
+                    DepartmentName = departmentname,
+                    CreateTime = DateTime.Now,
+                    ModifyTime = DateTime.Now
+                });
+            }
+            return list;
+        }
+
+        public int GetCount(int departmentId)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                if (departmentId == 0)
+                    return context.Major.Count();
+                else
+                return context.Major
+                    .Where(m=>m.DepartmentId==departmentId)
+                    .Count();
+            }
         }
 
         #endregion
@@ -119,7 +172,7 @@ namespace SIMS.Web.Services
 
         #region Private
 
-        private List<Major> GetSearchResult(string strKeyWord)
+        private List<Major> GetSearchResult(int departmentId)
         {
             using (var context = new SIMSDbContext())
             {
@@ -127,9 +180,8 @@ namespace SIMS.Web.Services
                             select c;
 
                 return query
-               .Where(m => (string.IsNullOrEmpty(strKeyWord) || m.Name.Contains(strKeyWord)))
+               .Where(m=>m.DepartmentId==departmentId)
                .OrderByDescending(m => m.CreateTime)
-                    //.ThenByDescending(m => m.Id)
                .ToList<Major>();
             }
         }

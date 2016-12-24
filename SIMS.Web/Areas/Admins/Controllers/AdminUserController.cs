@@ -25,7 +25,6 @@ namespace SIMS.Web.Areas.Admins.Controllers
             List<AdminUserViewModel> list = AdminUserService.Instance.GetBySomeWhere(code, dtParams.Start, dtParams.Length);
             int count = AdminUserService.Instance.GetCount(code);
 
-            //return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list }, JsonRequestBehavior.AllowGet);
             return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
         }
 

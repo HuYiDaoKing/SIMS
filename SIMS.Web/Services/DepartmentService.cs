@@ -31,7 +31,7 @@ namespace SIMS.Web.Services
 
         #region Query
 
-        public bool IsExist(int id, string code)
+        public bool IsExist(int id,string code)
         {
             bool isExist = false;
             using (var context = new SIMSDbContext())
@@ -70,9 +70,23 @@ namespace SIMS.Web.Services
         {
             using (var context = new SIMSDbContext())
             {
-                return context.AdminUser
+                return context.Department
                     .Where(m => (String.IsNullOrEmpty(name) || m.Code.Equals(name)))
                     .Count();
+            }
+        }
+
+        /// <summary>
+        /// 获取部门
+        /// </summary>
+        /// <returns></returns>
+        public List<Department> GetAll()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                var query = from c in context.Department
+                            select c;
+                return query.ToList<Department>();
             }
         }
 
