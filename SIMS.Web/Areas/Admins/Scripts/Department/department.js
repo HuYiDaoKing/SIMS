@@ -3,7 +3,7 @@ jQuery(document).ready(function ($) {
     InitTable();
     $("#btnQuery").bind("click", function () {
         var param = {
-            name: $("#Name").val()
+            name: $("#sDepartmentName").val()
         };
         var tbTable = $("#_DepartmentTable").DataTable();
         tbTable.settings()[0].ajax.data = param;
@@ -21,7 +21,7 @@ function InitTable() {
             "url": "/Admins/Department/GetDataTable",
             "type": "POST",
             "data": {
-                name: $("#Name").val()
+                name: $("#sDepartmentName").val()
             },
             error: function (e) {
                 alert("异常:" + e.responseText);
@@ -55,19 +55,21 @@ function InitTable() {
     });
 }
 
-function ShowModal(flag, id, code, name) {
+function ShowModal(flag, id, code, name,description) {
     if (flag == 0) {
         //add
         $('#Id').val('');
-        $('#Code').val('');
-        $('#NName').val('');
+        //$('#Code').val('');
+        $('#DepartmentName').val('');
+        $('#DepartmentDescription').val('');
         $('#departmentmodal .modal-title').html('添加');
         $('#departmentmodal').modal('show');
     } else {
         //update
         $('#Id').val(id);
-        $('#Code').val(code);
-        $('#NName').val(name);
+        //$('#Code').val(code);
+        $('#DepartmentName').val(name);
+        $('#DepartmentDescription').val(description);
         $('#departmentmodal .modal-title').html('修改');
         $('#departmentmodal').modal('show');
     }
@@ -86,18 +88,18 @@ function AddOrUpdate() {
 //添加
 function Add() {
 
-    var code = $.trim($("#Code").val());
-    var name = $.trim($("#NName").val());
-    var description = $.trim($("#Description").val())
+    //var code = $.trim($("#Code").val());
+    var name = $.trim($("#DepartmentName").val());
+    var description = $.trim($("#DepartmentDescription").val())
 
-    if (code == '' || name == '') {
-        return '院系的编号和名称不能为空!';
+    if (name == '') {
+        return '院系名称不能为空!';
     }
 
     $.ajax({
         url: '/Admins/Department/Add',
         data: {
-            code: code,
+            //code: code,
             name: name,
             description: description
         },
@@ -123,11 +125,11 @@ function Add() {
 //修改
 function Update() {
 
-    var code = $.trim($("#Code").val());
-    var name = $.trim($("#Name").val());
-    var description = $.trim($("#Description").val())
+    //var code = $.trim($("#Code").val());
+    var name = $.trim($("#DepartmentName").val());
+    var description = $.trim($("#DepartmentDescription").val())
 
-    if (code == '' || name == '') {
+    if (name == '') {
         return '院系的编号和名称不能为空!';
     }
 
@@ -135,7 +137,7 @@ function Update() {
         url: '/Admins/Department/Update',
         data: {
             id: $.trim($("#Id").val()),
-            code: code,
+            //code: code,
             name: name,
             description: description
         },

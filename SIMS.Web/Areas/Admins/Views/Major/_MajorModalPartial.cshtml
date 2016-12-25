@@ -1,5 +1,5 @@
 ﻿
-<div class="modal fade" id="departmentmodal">
+<div class="modal fade" id="majormodal">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -13,26 +13,8 @@
                 <div class="row" style="display:none;">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="Id" class="control-label">ID</label>
-                            <input type="text" class="form-control" id="Id" value="0">
-                        </div>
-                    </div>
-                </div>
-
-                @*<div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="Code" class="control-label">编号</label>
-                            <input type="text" class="form-control" id="Code">
-                        </div>
-                    </div>
-                </div>*@
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="Name" class="control-label">名称</label>
-                            <input type="text" class="form-control" id="DepartmentName">
+                            <label for="MajorId" class="control-label">ID</label>
+                            <input type="text" class="form-control" id="MajorId" value="0">
                         </div>
                     </div>
                 </div>
@@ -40,8 +22,28 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="Description" class="control-label">备注：</label>
-                            <textarea class="form-control autogrow" id="DepartmentDescription"></textarea>
+                            <label for="ddlDepartment1">学院(系):</label>
+                            <select id="ddlDepartment1" style="width:200px;">
+                                <option value="0">--请选择--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="MajorName" class="control-label">专业名称:</label>
+                            <input type="text" class="form-control" id="MajorName">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="MajorDescription" class="control-label">描述:</label>
+                            <input type="text" class="form-control" id="MajorDescription">
                         </div>
                     </div>
                 </div>

@@ -37,12 +37,18 @@ namespace SIMS.Web.Services
             {
                 if (id == 0)
                 {
-                    var query = context.Major.FirstOrDefault(c=>c.DepartmentId.Equals(departmentId) && c.Code.Equals(code));
-                    isExist = null == query ? false : true;
+                    //int count = context.Major.Where(c=>c.DepartmentId ==departmentId && c.Code == code).Count();
+                    //if (count > 0)
+                    //{
+                       
+                    //}
+                    var query = context.Major.FirstOrDefault(c => c.DepartmentId == departmentId && c.Code == code);
+                    //var query = from c in context.Major.Where(c=>c.DepartmentId.Equals(departmentId)) select c as Major;
+                    isExist = null==query ? false :true;
                 }
                 else
                 {
-                    var query = context.Major.FirstOrDefault(c => c.Code.Equals(code) && c.DepartmentId.Equals(departmentId) && c.Id != id);
+                    var query = context.Major.FirstOrDefault(c => c.DepartmentId == departmentId && c.Code == code && c.Id != id);
                     isExist = null == query ? false : true;
                 }
                 return isExist;
@@ -57,7 +63,7 @@ namespace SIMS.Web.Services
                 return query;
             }
         }
-        public List<MajorViewModel> GetBySomeWhere(int departmentId,int iStart, int iLimit)
+        public List<MajorViewModel> GetBySomeWhere(int departmentId, int iStart, int iLimit)
         {
             List<MajorViewModel> list = new List<MajorViewModel>();
             var filtered = GetSearchResult(departmentId);
@@ -65,7 +71,7 @@ namespace SIMS.Web.Services
             var query = from c in filtered.Skip(iStart).Take(iLimit) select c;
 
             List<Major> majors = query.ToList<Major>();
-            foreach(Major major in majors)
+            foreach (Major major in majors)
             {
                 string departmentname = string.Empty;
                 Department department = DepartmentService.Instance.GetById(departmentId);
@@ -94,9 +100,46 @@ namespace SIMS.Web.Services
                 if (departmentId == 0)
                     return context.Major.Count();
                 else
-                return context.Major
-                    .Where(m=>m.DepartmentId==departmentId)
-                    .Count();
+                    return context.Major
+                        .Where(m => m.DepartmentId == departmentId)
+                        .Count();
+            }
+        }
+
+        public string GetMajorCode(int departmentId)
+        {
+            //MajorCode=DepartmentCode+MaxId
+            using (var context = new SIMSDbContext())
+            {
+                string code = string.Empty;
+                Department department = DepartmentService.Instance.GetById(departmentId);
+                string _code = string.Empty;
+                int maxMajorId = GetMaxId();
+                if (maxMajorId < 10)
+                {
+                    _code = string.Format("0{0}", maxMajorId+1);
+                }
+                else
+                {
+                    _code = maxMajorId.ToString();
+                }
+                code = String.Format("{0}{1}",department.Code,_code);
+                return code;
+            }
+        }
+
+        /// <summary>
+        /// 自增ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxId()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                int count = context.Major.Count();
+                if (count > 0)
+                    return (from c in context.Major select c.Id).Max();
+                return 0;
             }
         }
 
@@ -179,12 +222,21 @@ namespace SIMS.Web.Services
                 var query = from c in context.Major.ToList()
                             select c;
 
+                if (departmentId != 0)
+                {
+                    return query
+               .Where(m => m.DepartmentId == departmentId)
+               .OrderByDescending(m => m.CreateTime)
+               .ToList<Major>();
+                }
+
                 return query
-               .Where(m=>m.DepartmentId==departmentId)
                .OrderByDescending(m => m.CreateTime)
                .ToList<Major>();
             }
         }
+
+
 
         #endregion
     }

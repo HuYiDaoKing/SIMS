@@ -1,10 +1,13 @@
-﻿@model SIMS.Web.Areas.Admins.ViewModels.AdminUserViewModel
+﻿@model SIMS.Web.Areas.Admins.ViewModels.MajorViewModel
 @using SIMS.Web.EntityDataModel;
 @using SIMS.Common;
 @using SIMS.Web.Services;
+@using SIMS.Web.Helper;
+
 @{
+    var currentUser = Session[AccountHashKeys.CurrentAdminUser] as AdminUser;
     var id = Model.Id;
-    var profession = Model.Profession;
+    var profession = currentUser.Profession;
 }
 
 <div class="hidden-sm hidden-xs action-buttons text-left btn-group-vertical">

@@ -94,5 +94,4 @@ function ShowModal(flag) {
         //update
         $('#usermodal .modal-title').html('修改');
     }
-
 }

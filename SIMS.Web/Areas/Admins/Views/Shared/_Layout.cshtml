@@ -9,7 +9,7 @@
     {
         if (this.CurrentAdminUser() == null)
         {
-            Response.Redirect("/Admins/Login/Index");
+            Response.Redirect("/Admins/Account/Login");
         }
         AdminUser userInfo = this.CurrentAdminUser() as AdminUser;
         username = userInfo.Name;
@@ -78,6 +78,9 @@
 
     <!-- departmentmodal） -->
     @Html.Partial("~/Areas/Admins/Views/Department/_DepartmentModalPartial.cshtml")
+
+    <!-- majorModalPartial） -->
+    @Html.Partial("~/Areas/Admins/Views/Major/_MajorModalPartial.cshtml")
 
     <div class="page-container">
 

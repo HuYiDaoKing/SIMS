@@ -22,20 +22,20 @@ namespace SIMS.Web.Areas.Admins.Controllers
         [HttpPost]
         public JsonResult GetDataTable(int departmentId)
         {
-            DataTableParams dtParams = new DataTableParams(this);
-            List<MajorViewModel> list = MajorService.Instance.GetBySomeWhere(departmentId, dtParams.Start, dtParams.Length);
-
-            int count = MajorService.Instance.GetCount(departmentId);
-
-            return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
+                DataTableParams dtParams = new DataTableParams(this);
+                List<MajorViewModel> list = MajorService.Instance.GetBySomeWhere(departmentId, dtParams.Start, dtParams.Length);
+                int count = MajorService.Instance.GetCount(departmentId);
+                return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Add(int departmemtId, string code, string name, string description)
+        public JsonResult Add(int departmemtId,string name, string description)
         {
             var oResult = new Object();
             try
             {
+                string code = MajorService.Instance.GetMajorCode(departmemtId);//学院代码+MaxMajorId(两位)
+   
                 if (MajorService.Instance.IsExist(0, departmemtId, code))
                 {
                     oResult = new
@@ -143,8 +143,8 @@ namespace SIMS.Web.Areas.Admins.Controllers
         [HttpPost]
         public JsonResult GetAllMajor()
         {
-            List<Department> list = DepartmentService.Instance.GetAll();
-            return Json(list, JsonRequestBehavior.AllowGet);
+                List<Department> list = DepartmentService.Instance.GetAll();
+                return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         #region Private

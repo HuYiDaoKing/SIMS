@@ -30,11 +30,12 @@ namespace SIMS.Web.Areas.Admins.Controllers
         }
 
         [HttpPost]
-        public JsonResult Add(string code, string name, string description)
+        public JsonResult Add(string name, string description)
         {
             var oResult = new Object();
             try
             {
+                string code = DepartmentService.Instance.GetDepartmentCode();
                 if (DepartmentService.Instance.IsExist(0, code))
                 {
                     oResult = new
@@ -74,46 +75,41 @@ namespace SIMS.Web.Areas.Admins.Controllers
             }
         }
 
-        public JsonResult Update(int id, string code, string name, string description)
+        public JsonResult Update(int id,string name, string description)
         {
             var oResult = new Object();
             try
             {
-                if (String.IsNullOrEmpty(code) || String.IsNullOrEmpty(name))
+                if (String.IsNullOrEmpty(name))
                 {
                     oResult = new
                     {
                         Bresult = false,
-                        Notice = "名称或编号不能为空!"
+                        Notice = "名称不能为空!"
                     };
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
 
-                if (DepartmentService.Instance.IsExist(id, code))
+                Department originalDepartment = DepartmentService.Instance.GetById(id);
+                if (originalDepartment == null)
                 {
                     oResult = new
                     {
                         Bresult = false,
-                        Notice = "院系新增失败,已经存在该编号!"
+                        Notice = "不存在该院系!请检查!"
                     };
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
+                originalDepartment.Name = name;
+                originalDepartment.Description = description;
+                originalDepartment.ModifyTime = DateTime.Now;
 
-                Department department = new Department
-                {
-                    Code = code,
-                    Name = name,
-                    Description = description,
-                    CreateTime = DateTime.Now,
-                    ModifyTime = DateTime.Now
-                };
-
-                bool bRet = DepartmentService.Instance.Create(department);
+                bool bRet = DepartmentService.Instance.Create(originalDepartment);
 
                 oResult = new
                 {
                     Bresult = bRet,
-                    Notice = bRet ? "院系新增成功!" : "院系新增失败!"
+                    Notice = bRet ? "院系修改成功!" : "院系修改失败!"
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -122,10 +118,17 @@ namespace SIMS.Web.Areas.Admins.Controllers
                 oResult = new
                 {
                     Bresult = false,
-                    Notice = String.Format("院系新增失败!异常:{0}", ex.Message)
+                    Notice = String.Format("院系修改失败!异常:{0}", ex.Message)
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetDepartment()
+        {
+            List<Department> list = DepartmentService.Instance.GetAll();
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         #region Private

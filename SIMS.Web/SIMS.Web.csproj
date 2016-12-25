@@ -1477,6 +1477,7 @@
     <Content Include="Areas\Admins\Views\Department\_DepartmentModalPartial.cshtml" />
     <Content Include="Areas\Admins\Views\Major\Index.cshtml" />
     <Content Include="Areas\Admins\Views\Major\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\Major\_MajorModalPartial.cshtml" />
     <None Include="Properties\PublishProfiles\SIMSConfig.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

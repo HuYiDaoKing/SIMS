@@ -1,9 +1,11 @@
 ﻿jQuery(document).ready(function ($) {
     InitTable();
+    BindDDLDepartment('ddlDepartment');
+    BindDDLDepartment('ddlDepartment1');
 
     $("#btnQuery").bind("click", function () {
         var param = {
-            departmentId: 0
+            departmentId: $.trim($("#ddlDepartment").val())
         };
         var tbTable = $("#_MajorTable").DataTable();
         tbTable.settings()[0].ajax.data = param;
@@ -22,10 +24,10 @@ function InitTable() {
             "type": "POST",
             "data": {
                 //name: $("#Name").val()
-                departmentId:0
+                departmentId: $.trim($("#ddlDepartment").val())
             },
             error: function (e) {
-                alert("异常:" + e.responseText);
+                alert("加载table异常:" + e.responseText);
             }
         },
         "dom": 'rtp',
@@ -47,7 +49,7 @@ function InitTable() {
             'infoFiltered': '(过滤总件数 _MAX_ 条)'
         },
         "columns": [
-            { "data": "Id", "title": "ID" },
+            //{ "data": "Id", "title": "ID" },
             { "data": "Code", "title": "编号" },
             { "data": "DepartmentName", "title": "学院名称" },
             { "data": "Name", "title": "名称" },
@@ -57,9 +59,9 @@ function InitTable() {
     });
 }
 
-function BindDDLMajor() {
+function BindDDLDepartment(id) {
     $.ajax({
-        url: '/Admins/ServiceArea/GetAllMajor',
+        url: '/Admins/Department/GetDepartment',
         data: null,
         type: 'post',
         cache: false,
@@ -70,11 +72,114 @@ function BindDDLMajor() {
                 for (var i = 0; i < data.length; i++) {
                     htmlstr += "<option value='" + data[i].Id + "'>" + data[i].Name + "</option>";
                 }
-                $("#" + Id).html(htmlstr);
+                $("#" + id).html(htmlstr);
+            }
+        },
+        error: function (e) {
+            alert("绑定BindDDLDepartment异常:" + e.responseText);
+        }
+    });
+}
+
+function ShowModal(flag) {
+    if (flag == 0) {
+        //add
+        $('#majormodal .modal-title').html('添加');
+        $('#majormodal').modal('show');
+    } else {
+        //update
+        $('#majormodal .modal-title').html('修改');
+    }
+}
+
+function AddOrUpdate() {
+
+    var id = $('#Id').val();
+    if (id == 0) {
+        Add();
+    } else {
+        Update();
+    }
+}
+
+//添加
+function Add() {
+    var departmentId = $.trim($("#ddlDepartment1").val());
+    var name = $.trim($("#MajorName").val());
+    var description = $.trim($("#MajorDescription").val())
+
+    if (departmentId == '' || departmentId == '0')
+    {
+        alert('院系的编号和名称不能为空!');
+        return;
+    }
+
+    if (name == '')
+    {
+        alert('专业名称不能为空!');
+        return;
+    }
+
+    $.ajax({
+        url: '/Admins/Major/Add',
+        data: {
+            departmemtId: departmentId,
+            name: name,
+            description: description
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (result) {
+            if (result.Bresult) {
+                $('#majormodal').modal('hide');
+                table.fnFilter();
+            }
+            else {
+                alert(result.Notice);
             }
         },
         error: function (e) {
             alert("异常:" + e.responseText);
         }
     });
+
+}
+
+//修改
+function Update() {
+
+    var code = $.trim($("#Code").val());
+    var name = $.trim($("#Name").val());
+    var description = $.trim($("#Description").val())
+
+    if (code == '' || name == '') {
+        return '院系的编号和名称不能为空!';
+    }
+
+    $.ajax({
+        url: '/Admins/Major/Update',
+        data: {
+            id: $.trim($("#Id").val()),
+            code: code,
+            name: name,
+            description: description
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (result) {
+            if (result.Bresult) {
+                $('#majormodal').modal('hide');
+                table.fnFilter();
+            }
+            else {
+                alert(result.Notice);
+            }
+        },
+        error: function (e) {
+            alert("异常:" + e.responseText);
+        }
+    });
+
 }

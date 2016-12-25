@@ -31,19 +31,19 @@ namespace SIMS.Web.Services
 
         #region Query
 
-        public bool IsExist(int id,string code)
+        public bool IsExist(int id, string code)
         {
             bool isExist = false;
             using (var context = new SIMSDbContext())
             {
                 if (id == 0)
                 {
-                    var query = context.Department.FirstOrDefault(c => c.Code.Equals(code));
+                    var query = context.Department.FirstOrDefault(c => c.Code==code);
                     isExist = null == query ? false : true;
                 }
                 else
                 {
-                    var query = context.Department.FirstOrDefault(c=>c.Code.Equals(code) && c.Id!=id);
+                    var query = context.Department.FirstOrDefault(c => c.Code==code && c.Id != id);
                     isExist = null == query ? false : true;
                 }
                 return isExist;
@@ -89,6 +89,44 @@ namespace SIMS.Web.Services
                 return query.ToList<Department>();
             }
         }
+
+        public string GetDepartmentCode()
+        {
+            //DepartmentCode=MaxId
+            using (var context = new SIMSDbContext())
+            {
+                string code = string.Empty;
+                int maxMajorId = GetMaxId();
+                if (maxMajorId < 10)
+                {
+                    code = string.Format("0{0}", maxMajorId + 1);
+                }
+                else
+                {
+                    code = maxMajorId.ToString();
+                }
+                return code;
+            }
+        }
+
+        /// <summary>
+        /// 自增ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxId()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                int count = context.Department.Count();
+                if (count > 0)
+                {
+                    var q = (from c in context.Department select c.Id).Max();
+                    return (from c in context.Department select c.Id).Max();
+                }
+                return 0;
+            }
+        }
+
 
         #endregion
 
