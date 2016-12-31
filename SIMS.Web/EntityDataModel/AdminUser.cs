@@ -25,5 +25,6 @@ namespace SIMS.Web.EntityDataModel
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.DateTime> ModifyTime { get; set; }
         public string Grade { get; set; }
+        public string Nation { get; set; }
     }
 }

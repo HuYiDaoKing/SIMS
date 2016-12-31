@@ -55,6 +55,15 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <label for="Nation" class="control-label">民族</label>
+                            <input type="text" class="form-control" id="Nation">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
                             <label for="dp_department" class="control-label">系</label>
                             <select size="1" id="dp_department">
                                 <option value="男" selected="selected">计算机</option>
@@ -79,11 +88,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="dp_major" class="control-label">职业</label>
-                            <select size="1" id="dp_major">
-                                <option value="男" selected="selected">管理员</option>
-                                <option value="女">学生</option>
-                                <option value="女">教师</option>
+                            <label for="dp_profession" class="control-label">职业</label>
+                            <select size="1" id="dp_profession">
+                                <option value="0" selected="selected">管理员</option>
+                                <option value="1">学生</option>
+                                <option value="2">教师</option>
                             </select>
                         </div>
                     </div>
@@ -92,9 +101,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" id="btnOperation" class="btn btn-info">保存</button>
+                <button type="button" onclick="AddOrUpdate();" class="btn btn-info">保存</button>
                 <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-
             </div>
         </div>
     </div>

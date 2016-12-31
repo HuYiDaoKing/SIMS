@@ -18,6 +18,7 @@
           <Property Name="Passwordsalt" Type="varchar(max)" />
           <Property Name="Profession" Type="int" />
           <Property Name="Grade" Type="varchar" MaxLength="50" />
+          <Property Name="Nation" Type="varchar" MaxLength="50" />
           <Property Name="CreateTime" Type="datetime" />
           <Property Name="ModifyTime" Type="datetime" />
         </EntityType>
@@ -125,6 +126,7 @@
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="ModifyTime" Type="DateTime" Precision="3" />
           <Property Name="Grade" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Nation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="StuCourse">
           <Key>
@@ -184,6 +186,7 @@
           <EntitySetMapping Name="AdminUser">
             <EntityTypeMapping TypeName="SIMSModel.AdminUser">
               <MappingFragment StoreEntitySet="AdminUser">
+                <ScalarProperty Name="Nation" ColumnName="Nation" />
                 <ScalarProperty Name="Grade" ColumnName="Grade" />
                 <ScalarProperty Name="ModifyTime" ColumnName="ModifyTime" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />

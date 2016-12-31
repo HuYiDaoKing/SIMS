@@ -38,12 +38,12 @@ namespace SIMS.Web.Services
             {
                 if (id == 0)
                 {
-                    var query = context.Department.FirstOrDefault(c => c.Code==code);
+                    var query = context.Department.FirstOrDefault(c => c.Code == code);
                     isExist = null == query ? false : true;
                 }
                 else
                 {
-                    var query = context.Department.FirstOrDefault(c => c.Code==code && c.Id != id);
+                    var query = context.Department.FirstOrDefault(c => c.Code == code && c.Id != id);
                     isExist = null == query ? false : true;
                 }
                 return isExist;
@@ -92,14 +92,16 @@ namespace SIMS.Web.Services
 
         public string GetDepartmentCode()
         {
-            //DepartmentCode=MaxId
             using (var context = new SIMSDbContext())
             {
                 string code = string.Empty;
                 int maxMajorId = GetMaxId();
                 if (maxMajorId < 10)
                 {
-                    code = string.Format("0{0}", maxMajorId + 1);
+                    if (maxMajorId == 0)
+                        code = string.Format("0{0}", maxMajorId + 1);
+                    else
+                        code = string.Format("0{0}", maxMajorId);
                 }
                 else
                 {

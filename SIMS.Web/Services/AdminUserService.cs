@@ -100,15 +100,95 @@ namespace SIMS.Web.Services
             }
         }
 
-        public bool IsExist(string code)
+        //public bool IsExist(string code)
+        //{
+        //    using (var context = new SIMSDbContext())
+        //    {
+        //        int count = context.AdminUser
+        //            .Where(m => (m.Code.Equals(code)))
+        //            .Count();
+
+        //        return count > 0 ? true : false;
+        //    }
+        //}
+
+        public bool IsExist(int id, string code)
+        {
+            bool isExist = false;
+            using (var context = new SIMSDbContext())
+            {
+                if (id == 0)
+                {
+                    var query = context.AdminUser.FirstOrDefault(c => c.Code == code);
+                    isExist = null == query ? false : true;
+                }
+                else
+                {
+                    var query = context.AdminUser.FirstOrDefault(c => c.Code == code && c.Id != id);
+                    isExist = null == query ? false : true;
+                }
+                return isExist;
+            }
+        }
+
+
+        public string GetCode(string grade, int department, int major, int profession)
         {
             using (var context = new SIMSDbContext())
             {
-                int count = context.AdminUser
-                    .Where(m => (m.Code.Equals(code)))
-                    .Count();
+                string code = string.Empty;
 
-                return count > 0 ? true : false;
+                switch (profession)
+                {
+                    case 0:
+                        //年级+学院(系)+专业+MaxId
+                        //一个专业设置<=1000
+                        Department originalDepartment = DepartmentService.Instance.GetById(department);
+                        Major originalMajor = MajorService.Instance.GetById(major);
+
+                        int maxMajorId = GetMaxId();
+                        if (maxMajorId < 10)
+                        {
+                            if (maxMajorId == 0)
+                                code = String.Format("{0}{1}{2}000{3}", grade, originalDepartment.Code, originalMajor.Code, maxMajorId + 1);
+                            else
+                                code = String.Format("{0}{1}{2}000{3}", grade, originalDepartment.Code, originalMajor.Code, maxMajorId);
+
+                        } if (10 <= maxMajorId && maxMajorId < 100)
+                        {
+                            code = String.Format("{0}{1}{2}00{3}", grade, originalDepartment.Code, originalMajor.Code, maxMajorId);
+                        }
+                        else if (100 <= maxMajorId && maxMajorId < 1000)
+                        {
+                            code = String.Format("{0}{1}{2}0{3}", grade, originalDepartment.Code, originalMajor.Code, maxMajorId);
+                        }
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                }
+
+
+                return code;
+            }
+        }
+
+        /// <summary>
+        /// 自增ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxId()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                int count = context.Department.Count();
+                if (count > 0)
+                {
+                    var q = (from c in context.Department select c.Id).Max();
+                    return (from c in context.Department select c.Id).Max();
+                }
+                return 0;
             }
         }
 
@@ -126,10 +206,11 @@ namespace SIMS.Web.Services
                     Code = "001",
                     Name = "admin",
                     Sex = "M",
-                    DepartmentId=0,
-                    MajorId=0,
+                    DepartmentId = 0,
+                    MajorId = 0,
                     Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
                     Profession = 0,
+                    Nation = "汉",
                     CreateTime = DateTime.Now,
                     ModifyTime = DateTime.Now
                 };
@@ -232,7 +313,7 @@ namespace SIMS.Web.Services
                 int iCount = 0;
                 using (var context = new SIMSDbContext())
                 {
-                    string sql = @"select * from AdminUser where 1=1 ";
+                    /*string sql = @"select * from AdminUser where 1=1 ";
                     if (id == 0)
                     {
                         sql += "and Code=@Code";
@@ -244,7 +325,16 @@ namespace SIMS.Web.Services
                         iCount = context.Database.ExecuteSqlCommand(sql,
                             new SqlParameter("@Code", code),
                             new SqlParameter("@Id", id));
+                    }*/
+                    if (id == 0)
+                    {
+                        iCount = context.AdminUser.Where(c => c.Code == code).Count();
                     }
+                    else
+                    {
+                        iCount = context.AdminUser.Where(c=>c.Code==code && c.Id !=id).Count();
+                    }
+                    
                     isExist = iCount > 0 ? true : false;
                 }
             }

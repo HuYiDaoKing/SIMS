@@ -85,13 +85,132 @@ function InitTable() {
     });
 }
 
-function ShowModal(flag) {
+function ShowModal(flag, name, grade, sex, nation, department, major, profession) {
     if (flag == 0) {
         //add
         $('#usermodal .modal-title').html('添加');
+        $('#Name').val('');
+        //$('#dp_Grade').val('');
+        //$('#dp_sex').val('');
+        $('#Nation').val('');
+        //$('#dp_department').val('');
+        //$('#dp_major').val('');
+        //$('#dp_profession').val('');
+
         $('#usermodal').modal('show');
     } else {
         //update
         $('#usermodal .modal-title').html('修改');
+        $('#Name').val(name);
+        $('#dp_Grade').val(grade);
+        $('#dp_sex').val(sex);
+        $('#Nation').val(nation);
+        $('#dp_department').val(department);
+        $('#dp_major').val(major);
+        $('#dp_profession').val(profession);
+
+        $('#departmentmodal').modal('show');
     }
+}
+
+function AddOrUpdate() {
+    var id = $('#Id').val();
+    if (id == 0) {
+        Add();
+    } else {
+        Update();
+    }
+}
+
+//添加
+function Add() {
+    var name= $('#Name').val();
+    var grade=$('#dp_Grade').val();
+    var sex=$('#dp_sex').val();
+    var nation=$('#Nation').val();
+    var department=$('#dp_department').val();
+    var major=$('#dp_major').val();
+    var profession = $('#dp_profession').val();
+
+    if (name == '')
+        return '姓名不能为空 !';
+    if (grade == '')
+        return '年级不能为空!';
+    if (sex == '')
+        return '性别不能为空 !';
+    if (nation == '')
+        return '民族不能为空 !';
+    if (department == '')
+        return '民族不能为空 !';
+    if (major == '')
+        return '专业不能为空 !';
+    if (profession == '')
+        return '职业类型不能为空 !';
+
+    $.ajax({
+        url: '/Admins/AdminUser/Add',
+        data: {
+            name: name,
+            grade: grade,
+            sex: sex,
+            nation: nation,
+            department: department,
+            major: major,
+            profession: profession
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (result) {
+            if (result.Bresult) {
+                $('#departmentmodal').modal('hide');
+                table.fnFilter();
+            }
+            else {
+                alert(result.Notice);
+            }
+        },
+        error: function (e) {
+            alert("异常:" + e.responseText);
+        }
+    });
+
+}
+
+//修改
+function Update() {
+
+    //var code = $.trim($("#Code").val());
+    var name = $.trim($("#DepartmentName").val());
+    var description = $.trim($("#DepartmentDescription").val())
+
+    if (name == '') {
+        return '院系的编号和名称不能为空!';
+    }
+
+    $.ajax({
+        url: '/Admins/Department/Update',
+        data: {
+            id: $.trim($("#Id").val()),
+            //code: code,
+            name: name,
+            description: description
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (result) {
+            if (result.Bresult) {
+                $('#departmentmodal').modal('hide');
+                table.fnFilter();
+            }
+            else {
+                alert(result.Notice);
+            }
+        },
+        error: function (e) {
+            alert("异常:" + e.responseText);
+        }
+    });
+
 }

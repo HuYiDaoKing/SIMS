@@ -76,7 +76,6 @@ function ShowModal(flag, id, code, name,description) {
 }
 
 function AddOrUpdate() {
-
     var id = $('#Id').val();
     if (id == 0) {
         Add();
