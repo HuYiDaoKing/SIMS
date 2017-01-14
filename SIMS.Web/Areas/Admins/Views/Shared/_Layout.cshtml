@@ -82,6 +82,9 @@
     <!-- majorModalPartial） -->
     @Html.Partial("~/Areas/Admins/Views/Major/_MajorModalPartial.cshtml")
 
+    <!-- courseModalPartial） -->
+    @Html.Partial("~/Areas/Admins/Views/Course/_CourseModalPartial.cshtml")
+
     <div class="page-container">
 
         <div class="sidebar-menu toggle-others fixed">
@@ -185,16 +188,23 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="/Admins/Activity/Index">
+                        <a href="/Admins/Course/Index">
                             <i class="linecons-cd"></i>
-                            <span class="title">优惠活动</span>
+                            <span class="title">课程管理</span>
                         </a>
 
                     </li>
                     <li>
                         <a href="#">
                             <i class="linecons-wallet"></i>
-                            <span class="title">订单管理</span>
+                            <span class="title">学生选课</span>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="linecons-wallet"></i>
+                            <span class="title">成绩查询</span>
                         </a>
 
                     </li>

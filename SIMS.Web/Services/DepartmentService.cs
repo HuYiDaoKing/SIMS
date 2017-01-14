@@ -59,6 +59,15 @@ namespace SIMS.Web.Services
             }
         }
 
+        public Department GetByName(string name)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                var query = context.Department.FirstOrDefault(c=>c.Name==name);
+                return query;
+            }
+        }
+
         public List<Department> GetBySomeWhere(string name, int iStart, int iLimit)
         {
             var filtered = GetSearchResult(name);

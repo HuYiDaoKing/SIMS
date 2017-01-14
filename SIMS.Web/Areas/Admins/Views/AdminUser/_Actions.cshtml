@@ -4,7 +4,12 @@
 @using SIMS.Web.Services;
 @{
     var id = Model.Id;
-    var profession = Model.Profession;
+    //var profession = Model.Profession;
+    int? profession = 0;
+    if (this.CurrentAdminUser() == null)
+    {
+        profession = this.CurrentAdminUser().Profession;
+    }
 }
 
 <div class="hidden-sm hidden-xs action-buttons text-left btn-group-vertical">

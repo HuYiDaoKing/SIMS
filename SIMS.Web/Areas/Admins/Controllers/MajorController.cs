@@ -22,20 +22,20 @@ namespace SIMS.Web.Areas.Admins.Controllers
         [HttpPost]
         public JsonResult GetDataTable(int departmentId)
         {
-                DataTableParams dtParams = new DataTableParams(this);
-                List<MajorViewModel> list = MajorService.Instance.GetBySomeWhere(departmentId, dtParams.Start, dtParams.Length);
-                int count = MajorService.Instance.GetCount(departmentId);
-                return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
+            DataTableParams dtParams = new DataTableParams(this);
+            List<MajorViewModel> list = MajorService.Instance.GetBySomeWhere(departmentId, dtParams.Start, dtParams.Length);
+            int count = MajorService.Instance.GetCount(departmentId);
+            return Json(new { draw = dtParams.Draw, recordsTotal = list.Count, recordsFiltered = count, data = list.Select(m => ToJson(m, dtParams)) }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult Add(int departmemtId,string name, string description)
+        public JsonResult Add(int departmemtId, string name, string description)
         {
             var oResult = new Object();
             try
             {
                 string code = MajorService.Instance.GetMajorCode(departmemtId);//学院代码+MaxMajorId(两位)
-   
+
                 if (MajorService.Instance.IsExist(0, departmemtId, code))
                 {
                     oResult = new
@@ -76,7 +76,8 @@ namespace SIMS.Web.Areas.Admins.Controllers
             }
         }
 
-        public JsonResult Update(int id, int departmentId, string code, string name, string description)
+        [HttpPost]
+        public JsonResult Update(int id, int departmentId, string name, string description)
         {
             var oResult = new Object();
             try
@@ -91,41 +92,31 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
 
-                if (String.IsNullOrEmpty(code) || String.IsNullOrEmpty(name))
+                if (String.IsNullOrEmpty(name))
                 {
                     oResult = new
                     {
                         Bresult = false,
-                        Notice = "名称,专业编号不能为空!"
+                        Notice = "名称不能为空!"
                     };
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
 
-                if (MajorService.Instance.IsExist(id, departmentId, code))
+                Major major = MajorService.Instance.GetById(id);
+                if (major != null)
                 {
-                    oResult = new
-                    {
-                        Bresult = false,
-                        Notice = "专业新增失败,已经存在该编号!"
-                    };
-                    return Json(oResult, JsonRequestBehavior.AllowGet);
+                    major.DepartmentId = departmentId;
+                    major.Name = name;
+                    major.Description = description;
+                    major.ModifyTime = DateTime.Now;
                 }
 
-                Major major = new Major
-                {
-                    DepartmentId = departmentId,
-                    Code = code,
-                    Name = name,
-                    Description = description,
-                    CreateTime = DateTime.Now,
-                    ModifyTime = DateTime.Now
-                };
-                bool bRet = MajorService.Instance.Create(major);
+                bool bRet = MajorService.Instance.Update(major);
 
                 oResult = new
                 {
                     Bresult = bRet,
-                    Notice = bRet ? "专业新增成功!" : "专业新增失败!"
+                    Notice = bRet ? "专业修改成功!" : "专业修改失败!"
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -143,8 +134,8 @@ namespace SIMS.Web.Areas.Admins.Controllers
         [HttpPost]
         public JsonResult GetAllMajor()
         {
-                List<Department> list = DepartmentService.Instance.GetAll();
-                return Json(list, JsonRequestBehavior.AllowGet);
+            List<Department> list = DepartmentService.Instance.GetAll();
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         #region Private

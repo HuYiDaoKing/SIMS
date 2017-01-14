@@ -30,6 +30,26 @@ namespace SIMS.Web.Services
         #region Public
 
         #region Query
+
+        public bool IsExist(int id, int departmentId, string code)
+        {
+            bool isExist = false;
+            using (var context = new SIMSDbContext())
+            {
+                if (id == 0)
+                {
+                    var query = context.Course.FirstOrDefault(c => c.DepartmentId == departmentId && c.Code == code);
+                    isExist = null == query ? false : true;
+                }
+                else
+                {
+                    var query = context.Course.FirstOrDefault(c => c.DepartmentId == departmentId && c.Code == code && c.Id != id);
+                    isExist = null == query ? false : true;
+                }
+                return isExist;
+            }
+        }
+
         public Course GetById(int? id)
         {
             using (var context = new SIMSDbContext())
@@ -39,14 +59,62 @@ namespace SIMS.Web.Services
             }
         }
 
-        public List<Course> GetBySomeWhere(string strKeyWord, int iStart, int iLimit, out int iTotal)
+        public List<Course> GetBySomeWhere(int departmentId, int iStart, int iLimit)
         {
-            var filtered = GetSearchResult(strKeyWord);
-            iTotal = filtered.Count;
-
+            var filtered = GetSearchResult(departmentId);
             var query = from c in filtered.Skip(iStart).Take(iLimit) select c;
 
             return query.ToList<Course>();
+        }
+
+        public int GetCount(int departmentId)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                if (departmentId == 0)
+                    return context.Course.Count();
+                else
+                    return context.Course
+                        .Where(m => m.DepartmentId == departmentId)
+                        .Count();
+            }
+        }
+
+        public string GetCourseCode(int departmentId)
+        {
+            //课程编号(院系代码2位+顺序编号2位)
+            using (var context = new SIMSDbContext())
+            {
+                string code = string.Empty;
+                Department department = DepartmentService.Instance.GetById(departmentId);
+                string _code = string.Empty;
+                int maxMajorId = GetMaxId();
+                if (maxMajorId < 10)
+                {
+                    _code = string.Format("0{0}", maxMajorId + 1);
+                }
+                else
+                {
+                    _code = maxMajorId.ToString();
+                }
+                code = String.Format("{0}{1}", department.Code, _code);
+                return code;
+            }
+        }
+
+        /// <summary>
+        /// 自增ID
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxId()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                int count = context.Course.Count();
+                if (count > 0)
+                    return (from c in context.Course select c.Id).Max();
+                return 0;
+            }
         }
 
         #endregion
@@ -121,17 +189,23 @@ namespace SIMS.Web.Services
 
         #region Private
 
-        private List<Course> GetSearchResult(string strKeyWord)
+        private List<Course> GetSearchResult(int departmentId)
         {
             using (var context = new SIMSDbContext())
             {
                 var query = from c in context.Course.ToList()
                             select c;
 
-                return query
-               .Where(m => (string.IsNullOrEmpty(strKeyWord) || m.Name.Contains(strKeyWord)))
+                if (departmentId != 0)
+                {
+                    return query
+               .Where(m => m.DepartmentId == departmentId)
                .OrderByDescending(m => m.CreateTime)
-                    //.ThenByDescending(m => m.Id)
+               .ToList<Course>();
+                }
+
+                return query
+               .OrderByDescending(m => m.CreateTime)
                .ToList<Course>();
             }
         }

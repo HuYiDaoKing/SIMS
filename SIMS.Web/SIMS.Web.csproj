@@ -39,7 +39,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NPOI">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\packages\NPOI.2.2.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -164,6 +179,7 @@
     <Compile Include="Areas\Admins\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admins\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\Admins\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Admins\Controllers\CourseController.cs" />
     <Compile Include="Areas\Admins\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Admins\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\Admins\Controllers\MajorController.cs" />
@@ -1139,6 +1155,7 @@
     <Content Include="Areas\Admins\assets\less\index.html" />
     <Content Include="Areas\Admins\assets\less\other-less\index.html" />
     <Content Include="Areas\Admins\assets\less\xenon-less\index.html" />
+    <Content Include="Areas\Admins\Scripts\Course\course.js" />
     <Content Include="Areas\Admins\Scripts\Department\department.js" />
     <Content Include="Areas\Admins\Scripts\Major\major.js" />
     <Content Include="Content\bootstrap.css" />
@@ -1478,6 +1495,9 @@
     <Content Include="Areas\Admins\Views\Major\Index.cshtml" />
     <Content Include="Areas\Admins\Views\Major\_Actions.cshtml" />
     <Content Include="Areas\Admins\Views\Major\_MajorModalPartial.cshtml" />
+    <Content Include="Areas\Admins\Views\Course\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\Course\_CourseModalPartial.cshtml" />
+    <Content Include="Areas\Admins\Views\Course\_Actions.cshtml" />
     <None Include="Properties\PublishProfiles\SIMSConfig.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

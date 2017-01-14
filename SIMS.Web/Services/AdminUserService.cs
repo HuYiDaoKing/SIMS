@@ -81,6 +81,7 @@ namespace SIMS.Web.Services
                     MajorId = user.MajorId,
                     Passwordsalt = user.Passwordsalt,
                     Profession = user.Profession,
+                    Grade=user.Grade,
                     CreateTime = user.CreateTime,
                     ModifyTime = user.ModifyTime,
                     DepartmentName = departmentname,
@@ -99,18 +100,6 @@ namespace SIMS.Web.Services
                     .Count();
             }
         }
-
-        //public bool IsExist(string code)
-        //{
-        //    using (var context = new SIMSDbContext())
-        //    {
-        //        int count = context.AdminUser
-        //            .Where(m => (m.Code.Equals(code)))
-        //            .Count();
-
-        //        return count > 0 ? true : false;
-        //    }
-        //}
 
         public bool IsExist(int id, string code)
         {
@@ -131,7 +120,6 @@ namespace SIMS.Web.Services
             }
         }
 
-
         public string GetCode(string grade, int department, int major, int profession)
         {
             using (var context = new SIMSDbContext())
@@ -141,6 +129,8 @@ namespace SIMS.Web.Services
                 switch (profession)
                 {
                     case 0:
+                        break;
+                    case 1:
                         //年级+学院(系)+专业+MaxId
                         //一个专业设置<=1000
                         Department originalDepartment = DepartmentService.Instance.GetById(department);
@@ -163,8 +153,6 @@ namespace SIMS.Web.Services
                             code = String.Format("{0}{1}{2}0{3}", grade, originalDepartment.Code, originalMajor.Code, maxMajorId);
                         }
                         break;
-                    case 1:
-                        break;
                     case 2:
                         break;
                 }
@@ -182,11 +170,13 @@ namespace SIMS.Web.Services
         {
             using (var context = new SIMSDbContext())
             {
-                int count = context.Department.Count();
+                //int count = context.Department.Count();
+                int count = context.AdminUser.Count();
                 if (count > 0)
                 {
-                    var q = (from c in context.Department select c.Id).Max();
-                    return (from c in context.Department select c.Id).Max();
+                    //var q = (from c in context.Department select c.Id).Max();
+                    //return (from c in context.Department select c.Id).Max();
+                    return (from c in context.AdminUser select c.Id).Max();
                 }
                 return 0;
             }

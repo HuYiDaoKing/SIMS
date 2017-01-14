@@ -14,6 +14,24 @@ jQuery(document).ready(function ($) {
     });      
 
     InitTable();
+
+    //20170102 下拉区域数据初始化
+    GetMajorByDepartmentId("dp_department", 0);
+
+    $("#dp_department").bind("change", function () {
+        var ParentId = $.trim($("#dp_department option:selected").val());
+        if (ParentId != 0) {
+            GetMajorByDepartmentId("dp_major", ParentId);
+        }
+    });
+
+    $("#dp_major").bind("change", function () {
+        /*var ParentId = $.trim($("#dp_major option:selected").val());
+        if (ParentId != 0) {
+            GetMajorByDepartmentId("dp_major", ParentId);
+        }*/
+    });
+
     $("#btnQuery").bind("click", function () {
         var param = {
             code: $("#Code").val()
@@ -25,6 +43,7 @@ jQuery(document).ready(function ($) {
 });
 
 var table;
+
 //加载表数据
 function InitTable() {
     table = $("#_AdminUserTable").dataTable({
@@ -66,6 +85,7 @@ function InitTable() {
             { "data": "DepartmentName", "title": "系" },
             { "data": "MajorName", "title": "专业" },
             { "data": "Profession", "title": "职业" },
+            { "data": "Grade", "title": "年级" },
             /*{
                 "data": "Id",
                 "title": "操作",
@@ -169,6 +189,7 @@ function Add() {
             else {
                 alert(result.Notice);
             }
+            $('#usermodal').modal('hide');
         },
         error: function (e) {
             alert("异常:" + e.responseText);
@@ -207,10 +228,41 @@ function Update() {
             else {
                 alert(result.Notice);
             }
+            $('#usermodal').modal('hide');
         },
         error: function (e) {
             alert("异常:" + e.responseText);
         }
     });
 
+}
+
+//根据院系获取专业(或只获取院系)
+function GetMajorByDepartmentId(Id, DepartmentId) {
+    $.ajax({
+        url: '/Admins/Department/GetMajorsByDepartmentId',
+        data: {
+            departmentId: DepartmentId
+        },
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            if (data != null) {
+                var htmlstr = "<option value='0'>--请选择--</option>";
+                for (var i = 0; i < data.length; i++) {
+                    htmlstr += "<option value='" + data[i].Id + "'>" + data[i].Name + "</option>";
+                }
+                $("#" + Id).html(htmlstr);
+            }
+        },
+        error: function (e) {
+            alert("异常:" + e.responseText);
+        }
+    });
+}
+
+//导入学生信息
+function ImportToExcel() {
+    alert('ImportToExcel!');
 }

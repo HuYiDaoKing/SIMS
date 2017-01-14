@@ -131,6 +131,21 @@ namespace SIMS.Web.Areas.Admins.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetMajorsByDepartmentId(int departmentId = 0)
+        {
+            if (departmentId == 0)
+            {
+                List<Department> departments = DepartmentService.Instance.GetAll();
+                return Json(departments, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                List<MajorViewModel> majors = MajorService.Instance.GetMajorsByDepartmentId(departmentId);
+                return Json(majors, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #region Private
 
         private Object ToJson(Department model, DataTableParams dtParams)

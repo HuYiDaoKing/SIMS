@@ -1,33 +1,36 @@
-﻿jQuery(document).ready(function ($) {
+﻿
+jQuery(document).ready(function ($) {
     InitTable();
-    BindDDLDepartment('ddlDepartment');
-    BindDDLDepartment('ddlDepartment1');
+
+    BindDDLDepartment('ddlDepartmentForCouse');
+    BindDDLDepartment('ddlDepartmentForCourse2');
 
     $("#btnQuery").bind("click", function () {
         var param = {
-            departmentId: $.trim($("#ddlDepartment").val())
+            //name: $("#sCourseName").val()
+            departmentId: $.trim($("#ddlDepartmentForCouse").val())
         };
-        var tbTable = $("#_MajorTable").DataTable();
+        var tbTable = $("#_CourseTable").DataTable();
         tbTable.settings()[0].ajax.data = param;
         tbTable.ajax.reload();
     });
 });
 
 var table;
+
 //加载表数据
 function InitTable() {
-    table = $("#_MajorTable").dataTable({
+    table = $("#_CourseTable").dataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/Admins/Major/GetDataTable",
+            "url": "/Admins/Course/GetDataTable",
             "type": "POST",
             "data": {
-                //name: $("#Name").val()
-                departmentId: $.trim($("#ddlDepartment").val())
+                departmentId: $.trim($("#ddlDepartmentForCouse").val())
             },
             error: function (e) {
-                alert("加载table异常:" + e.responseText);
+                alert("异常:" + e.responseText);
             }
         },
         "dom": 'rtp',
@@ -49,10 +52,10 @@ function InitTable() {
             'infoFiltered': '(过滤总件数 _MAX_ 条)'
         },
         "columns": [
-            //{ "data": "Id", "title": "ID" },
+            { "data": "Id", "title": "ID" },
             { "data": "Code", "title": "编号" },
-            { "data": "DepartmentName", "title": "学院名称" },
             { "data": "Name", "title": "名称" },
+            { "data": "Score", "title": "学分" },
             { "data": "Description", "title": "描述" },
             { "data": "Actions", "title": "操作", "sWidth": "15%", "sClass": "text-center" }
         ]
@@ -81,39 +84,30 @@ function BindDDLDepartment(id) {
     });
 }
 
-/*function ShowModal(flag) {
+function ShowModal(flag, id, name, departmentId, score, description) {
     if (flag == 0) {
         //add
-        $('#majormodal .modal-title').html('添加');
-        $('#majormodal').modal('show');
+        $('#CourseId').val('');
+        $('#CourseName').val('');
+        $('#CourseScore').val('');
+        $('#CourseDescription').val('');
+        $('#coursemodal .modal-title').html('添加');
+        $('#coursemodal').modal('show');
     } else {
         //update
-        $('#majormodal .modal-title').html('修改');
-    }
-}*/
-
-function ShowModal(flag, id, name, departmentId, description) {
-    if (flag == 0) {
-        //add
-        $('#MajorId').val('');
-        $('#MajorName').val('');
-        $('#MajorDescription').val('');
-        $('#majormodal .modal-title').html('添加');
-        $('#majormodal').modal('show');
-    } else {
-        //update
-        $('#MajorId').val(id);
-        $('#ddlDepartment1').val(departmentId);
-        $('#MajorName').val(name);
-        $('#MajorDescription').val(description);
-        $('#majormodal .modal-title').html('修改');
-        $('#majormodal').modal('show');
+        $('#CourseId').val(id);
+        $('#ddlDepartmentForCourse2').val(departmentId);
+        $('#CourseName').val(name);
+        $('#CourseScore').val(score);
+        $('#CourseDescription').val(description);
+        $('#coursemodal .modal-title').html('修改');
+        $('#coursemodal').modal('show');
     }
 }
 
 function AddOrUpdate() {
 
-    var id = $('#MajorId').val();
+    var id = $('#CourseId').val();
     if (id == 0) {
         Add();
     } else {
@@ -123,27 +117,33 @@ function AddOrUpdate() {
 
 //添加
 function Add() {
-    var departmentId = $.trim($("#ddlDepartment1").val());
-    var name = $.trim($("#MajorName").val());
-    var description = $.trim($("#MajorDescription").val())
+    var departmentId = $.trim($("#ddlDepartmentForCourse2").val());
+    var name = $.trim($("#CourseName").val());
+    var score = $.trim($("#CourseScore").val())
+    var description = $.trim($("#CourseDescription").val())
 
-    if (departmentId == '' || departmentId == '0')
-    {
-        alert('院系的编号和名称不能为空!');
+    if (departmentId == '' || departmentId == '0') {
+        alert('院系不能为空!');
         return;
     }
 
-    if (name == '')
+    if (name == '') {
+        alert('课程名称不能为空!');
+        return;
+    }
+
+    if (score == '' || score == '0')
     {
-        alert('专业名称不能为空!');
+        alert('课程学分不能为空!');
         return;
     }
 
     $.ajax({
-        url: '/Admins/Major/Add',
+        url: '/Admins/Course/Add',
         data: {
-            departmemtId: departmentId,
+            departmentId: departmentId,
             name: name,
+            score:score,
             description: description
         },
         type: 'post',
@@ -151,7 +151,7 @@ function Add() {
         dataType: 'json',
         success: function (result) {
             if (result.Bresult) {
-                $('#majormodal').modal('hide');
+                $('#coursemodal').modal('hide');
                 table.fnFilter();
             }
             else {
@@ -167,9 +167,10 @@ function Add() {
 
 //修改
 function Update() {
-    var departmentId = $.trim($("#ddlDepartment1").val());
-    var name = $.trim($("#MajorName").val());
-    var description = $.trim($("#MajorDescription").val())
+    var departmentId = $.trim($("#ddlDepartmentForCourse2").val());
+    var name = $.trim($("#CourseName").val());
+    var score = $.trim($("#CourseScore").val())
+    var description = $.trim($("#CourseDescription").val())
 
     if (departmentId == '' || departmentId == '0') {
         alert('院系的编号和名称不能为空!');
@@ -177,16 +178,22 @@ function Update() {
     }
 
     if (name == '') {
-        alert('专业名称不能为空!');
+        alert('课程名称不能为空!');
+        return;
+    }
+
+    if (score == '' || score == '0') {
+        alert('课程学分不能为空!');
         return;
     }
 
     $.ajax({
-        url: '/Admins/Major/Update',
+        url: '/Admins/Course/Update',
         data: {
-            id: $.trim($("#MajorId").val()),
+            id: $.trim($("#CourseId").val()),
             departmentId: departmentId,
             name: name,
+            score:score,
             description: description
         },
         type: 'post',
@@ -194,7 +201,7 @@ function Update() {
         dataType: 'json',
         success: function (result) {
             if (result.Bresult) {
-                $('#majormodal').modal('hide');
+                $('#coursemodal').modal('hide');
                 table.fnFilter();
             }
             else {

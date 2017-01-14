@@ -8,11 +8,16 @@ using System.Web.Mvc;
 using SIMS.Web.Services;
 using System.Collections;
 using SIMS.Web.EntityDataModel;
+using System.IO;
+using SIMS.Common;
+using System.Data;
 
 namespace SIMS.Web.Areas.Admins.Controllers
 {
     public class AdminUserController : Controller
     {
+        private const string CACHE = @"~/Content/Admin/Files/";
+
         // GET: Admins/AdminUser
         public ActionResult Index()
         {
@@ -36,7 +41,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
             try
             {
                 string code = AdminUserService.Instance.GetCode(grade, department, major, profession);
-                if(AdminUserService.Instance.IsExist(0,code))
+                if (AdminUserService.Instance.IsExist(0, code))
                 {
                     oResult = new
                     {
@@ -46,16 +51,17 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
 
-                AdminUser user = new AdminUser { 
-                    Code=code,
-                    Name=name,
-                    Sex=sex,
-                    DepartmentId=department,
-                    MajorId=major,
+                AdminUser user = new AdminUser
+                {
+                    Code = code,
+                    Name = name,
+                    Sex = sex,
+                    DepartmentId = department,
+                    MajorId = major,
                     Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
-                    Profession=profession,
-                    Grade=grade,
-                    Nation=nation,
+                    Profession = profession,
+                    Grade = grade,
+                    Nation = nation,
                     CreateTime = DateTime.Now,
                     ModifyTime = DateTime.Now
                 };
@@ -129,6 +135,77 @@ namespace SIMS.Web.Areas.Admins.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult Upload()
+        {
+            var oResult = new Object();
+            try
+            {
+                //注意:input name=file
+                HttpPostedFileBase file = Request.Files["file"];
+
+                //文件类型检测
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (!string.Equals(fileExtension.ToLower(), ".xls") && !string.Equals(fileExtension.ToLower(), ".xlsx"))
+                {
+                    oResult = new
+                    {
+                        Bresult = false,
+                        Notice = "文件格式不正确,请检查必须是Excel文件!"
+                    };
+                    return Json(oResult, JsonRequestBehavior.AllowGet);
+                }
+
+                if (file == null)
+                {
+                    oResult = new
+                    {
+                        Bresult = false,
+                        Notice = "文件为空!"
+                    };
+                }
+                else
+                {
+                    //1.文件上传
+                    string fileName = String.Format("{0}_{1}", DateTime.Now.ToString("yyyyMMdd"), file.FileName);
+                    string filepath = Path.Combine(HttpContext.Server.MapPath(CACHE), fileName);
+                    string fileDir = Path.GetDirectoryName(filepath);
+                    if (!string.IsNullOrEmpty(fileDir))
+                    {
+                        if (!Directory.Exists(fileDir))
+                            Directory.CreateDirectory(fileDir);
+                        file.SaveAs(filepath);
+                    }
+
+                    //2.文件解析
+                    using (ExcelHelper helper = new ExcelHelper(filepath))
+                    {
+                        DataTable dt1 = helper.ExcelToDataTable("2016级学生信息", true);
+                        WriteToDB(dt1);
+
+                        DataTable dt2 = helper.ExcelToDataTable("2015级学生信息", true);
+                        WriteToDB(dt2);
+                    }
+                }
+
+                oResult = new
+                {
+                    Bresult = false,
+                    Notice = "文件上传成功!"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                oResult = new
+                {
+                    Bresult = false,
+                    Notice = "文件上传失败,错误:" + ex.Message
+                };
+            }
+            return Json(oResult, JsonRequestBehavior.AllowGet);
+        }
+
         #region Private
 
         private Object ToJson(AdminUserViewModel model, DataTableParams dtParams)
@@ -139,6 +216,70 @@ namespace SIMS.Web.Areas.Admins.Controllers
             return json;
         }
 
-        #endregion
+        private void WriteToDB(DataTable dt)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                string grade = row["年级"].ToString();
+                string departmentname = row["院系"].ToString();
+                string majorName = row["专业"].ToString();
+                string sex = row["性别"].ToString();
+                string age = row["年龄"].ToString();
+                string name = row["名字"].ToString();
+                string nation = row["民族"].ToString();
+
+                int profession = 1;//学生
+                Department department = DepartmentService.Instance.GetByName(departmentname);
+                if (department == null)
+                {
+                    string msg = String.Format("当前院系{0},数据库中不存在!", departmentname);
+                    LogHelper.Log(LogType.Error, msg);
+                    continue;
+                }
+
+                Major major = MajorService.Instance.GetByName(majorName);
+                if (major == null)
+                {
+                    string msg = String.Format("当前专业{0},数据库中不存在!", majorName);
+                    LogHelper.Log(LogType.Error, msg);
+                    continue;
+                }
+
+                string code = AdminUserService.Instance.GetCode(grade, department.Id, major.Id, profession);
+                if (AdminUserService.Instance.IsExist(0, code))
+                {
+                    LogHelper.Log(LogType.Error, "院系新增用户失败,已经存在该编号!");
+                    continue;
+                }
+
+                AdminUser user = new AdminUser
+                {
+                    Code = code,
+                    Name = name,
+                    Sex = sex,
+                    DepartmentId = department.Id,
+                    MajorId = major.Id,
+                    Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
+                    Profession = profession,
+                    Grade = grade,
+                    Nation = nation,
+                    CreateTime = DateTime.Now,
+                    ModifyTime = DateTime.Now
+                };
+
+                bool bRet = AdminUserService.Instance.Create(user);
+
+                if (bRet)
+                {
+                    LogHelper.Log(LogType.Info, "用户新增成功!");
+                }
+                else
+                {
+                    LogHelper.Log(LogType.Info, "用户新增失败!");
+                }
+            }
+        }
     }
+
+        #endregion
 }

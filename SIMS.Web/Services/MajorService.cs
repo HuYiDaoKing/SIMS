@@ -63,6 +63,16 @@ namespace SIMS.Web.Services
                 return query;
             }
         }
+
+        public Major GetByName(string name)
+        {
+            using (var context = new SIMSDbContext())
+            {
+                var query = context.Major.FirstOrDefault(c=>c.Name==name);
+                return query;
+            }
+        }
+
         public List<MajorViewModel> GetBySomeWhere(int departmentId, int iStart, int iLimit)
         {
             List<MajorViewModel> list = new List<MajorViewModel>();
@@ -74,14 +84,14 @@ namespace SIMS.Web.Services
             foreach (Major major in majors)
             {
                 string departmentname = string.Empty;
-                Department department = DepartmentService.Instance.GetById(departmentId);
+                Department department = DepartmentService.Instance.GetById(major.DepartmentId);
                 if (department != null)
                     departmentname = department.Name;
 
                 list.Add(new MajorViewModel
                 {
                     Id = major.Id,
-                    DepartmentId = departmentId,
+                    DepartmentId = major.DepartmentId,
                     Code = major.Code,
                     Name = major.Name,
                     Description = major.Description,
@@ -92,7 +102,39 @@ namespace SIMS.Web.Services
             }
             return list;
         }
+        public List<MajorViewModel> GetMajorsByDepartmentId(int departmentId)
+        {
+            List<MajorViewModel> list = new List<MajorViewModel>();
 
+            using (var context = new SIMSDbContext())
+            {
+                List<Major> majors = context.Major.Where(c=>c.DepartmentId==departmentId).ToList();
+
+                foreach(var major in majors)
+                {
+                    string departmentname = string.Empty;
+                    Department department = DepartmentService.Instance.GetById(major.DepartmentId);
+                    if (department != null)
+                        departmentname = department.Name;
+
+                    if (major != null)
+                    {
+                        list.Add(new MajorViewModel
+                        {
+                            Id = major.Id,
+                            DepartmentId = departmentId,
+                            Code = major.Code,
+                            Name = major.Name,
+                            Description = major.Description,
+                            DepartmentName = departmentname,
+                            CreateTime = DateTime.Now,
+                            ModifyTime = DateTime.Now
+                        });
+                    }
+                }
+            }
+            return list;
+        }
         public int GetCount(int departmentId)
         {
             using (var context = new SIMSDbContext())
