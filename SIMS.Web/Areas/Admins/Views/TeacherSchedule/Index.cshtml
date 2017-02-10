@@ -1,25 +1,26 @@
 ﻿
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">课程管理</h3>
+        <h3 class="panel-title">教师课程</h3>
     </div>
     <div class="panel-body">
         <div id="msgInfo"></div>
         <div class="row">
             <div class="col-sm-12">
-                <label for="ddlDepartmentForCourse">学院(系):：</label>
-                <select id="ddlDepartmentForCourse" style="width:200px;">
+
+                <label for="ddlMajorForSchedule">专业:</label>
+                <select id="ddlMajorForSchedule" style="width:200px;">
                     <option value="0">--请选择--</option>
                 </select>
 
+                @*<input type="button" value="开始排课" id="btnShedule" style="margin-left:10px; margin-top:5px;" class="btn btn-secondary btn-sm btn-icon icon-left" />*@
                 <input type="button" value="查询" id="btnQuery" style="margin-left:10px; margin-top:5px;" class="btn btn-secondary btn-sm btn-icon icon-left" />
                 <input type="button" value="新增" onclick="ShowModal(0, 0, '', 0,0, '');" style="margin-left:10px; margin-top:5px;" class="btn btn-secondary btn-sm btn-icon icon-left" />
 
             </div>
         </div>
-        <table class="table table-bordered table-striped" id="_CourseTable"></table>
+        <table class="table table-bordered table-striped" id="_TeacherScheduleTable"></table>
     </div>
 </div>
 
-@*<script src="~/Areas/Admins/Scripts/CourseTeacher/courseteacher.js"></script>*@
-<script src="~/Areas/Admins/Scripts/Course/course.js"></script>
+<script src="~/Areas/Admins/Scripts/TeacherSchedule/teacherschedule.js"></script>

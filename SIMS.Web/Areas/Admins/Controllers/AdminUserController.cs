@@ -46,7 +46,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     oResult = new
                     {
                         Bresult = false,
-                        Notice = "院系新增用户失败,已经存在改编号!"
+                        Notice = "新增用户失败,已经存在改编号!"
                     };
                     return Json(oResult, JsonRequestBehavior.AllowGet);
                 }
@@ -71,7 +71,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                 oResult = new
                 {
                     Bresult = bRet,
-                    Notice = bRet ? "院系新增成功!" : "院系新增失败!"
+                    Notice = bRet ? "用户新增成功!" : "用户新增失败!"
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -80,7 +80,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                 oResult = new
                 {
                     Bresult = false,
-                    Notice = String.Format("院系新增失败!异常:{0}", ex.Message)
+                    Notice = String.Format("用户新增失败!异常:{0}", ex.Message)
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -120,7 +120,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                 oResult = new
                 {
                     Bresult = bRet,
-                    Notice = bRet ? "院系修改成功!" : "院系修改失败!"
+                    Notice = bRet ? "用户修改成功!" : "用户修改失败!"
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -129,7 +129,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
                 oResult = new
                 {
                     Bresult = false,
-                    Notice = String.Format("院系修改失败!异常:{0}", ex.Message)
+                    Notice = String.Format("用户修改失败!异常:{0}", ex.Message)
                 };
                 return Json(oResult, JsonRequestBehavior.AllowGet);
             }
@@ -181,10 +181,14 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     using (ExcelHelper helper = new ExcelHelper(filepath))
                     {
                         DataTable dt1 = helper.ExcelToDataTable("2016级学生信息", true);
-                        WriteToDB(dt1);
+                        WriteStudentsToDB(dt1);
 
                         DataTable dt2 = helper.ExcelToDataTable("2015级学生信息", true);
-                        WriteToDB(dt2);
+                        WriteStudentsToDB(dt2);
+
+                        //20170120增加教师信息
+                        DataTable dt3 = helper.ExcelToDataTable("教师信息", true);
+                        WriteTeachersToDB(dt3);
                     }
                 }
 
@@ -206,6 +210,13 @@ namespace SIMS.Web.Areas.Admins.Controllers
             return Json(oResult, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetTeachers()
+        {
+            List<AdminUser> list = AdminUserService.Instance.GetTeachers();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
         #region Private
 
         private Object ToJson(AdminUserViewModel model, DataTableParams dtParams)
@@ -216,7 +227,7 @@ namespace SIMS.Web.Areas.Admins.Controllers
             return json;
         }
 
-        private void WriteToDB(DataTable dt)
+        private void WriteStudentsToDB(DataTable dt)
         {
             foreach (DataRow row in dt.Rows)
             {
@@ -262,6 +273,70 @@ namespace SIMS.Web.Areas.Admins.Controllers
                     Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
                     Profession = profession,
                     Grade = grade,
+                    Nation = nation,
+                    CreateTime = DateTime.Now,
+                    ModifyTime = DateTime.Now
+                };
+
+                bool bRet = AdminUserService.Instance.Create(user);
+
+                if (bRet)
+                {
+                    LogHelper.Log(LogType.Info, "用户新增成功!");
+                }
+                else
+                {
+                    LogHelper.Log(LogType.Info, "用户新增失败!");
+                }
+            }
+        }
+
+        private void WriteTeachersToDB(DataTable dt)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                //string grade = row["年级"].ToString();
+                string departmentname = row["院系"].ToString();
+                //string majorName = row["专业"].ToString();
+                string sex = row["性别"].ToString();
+                string age = row["年龄"].ToString();
+                string name = row["名字"].ToString();
+                string nation = row["民族"].ToString();
+
+                int profession = 2;//教师
+                Department department = DepartmentService.Instance.GetByName(departmentname);
+                if (department == null)
+                {
+                    string msg = String.Format("当前院系{0},数据库中不存在!", departmentname);
+                    LogHelper.Log(LogType.Error, msg);
+                    continue;
+                }
+
+                //Major major = MajorService.Instance.GetByName(majorName);
+                //if (major == null)
+                //{
+                //    string msg = String.Format("当前专业{0},数据库中不存在!", majorName);
+                //    LogHelper.Log(LogType.Error, msg);
+                //    continue;
+                //}
+
+                string code = AdminUserService.Instance.GetCode(String.Empty, department.Id, 0, profession);
+                if (AdminUserService.Instance.IsExist(0, code))
+                {
+                    LogHelper.Log(LogType.Error, "院系新增教师失败,已经存在该编号!");
+                    continue;
+                }
+
+                AdminUser user = new AdminUser
+                {
+                    Code = code,
+                    Name = name,
+                    Sex = sex,
+                    DepartmentId = department.Id,
+                    //MajorId = major.Id,
+                    Passwordsalt = BCrypt.Net.BCrypt.HashPassword("123", BCrypt.Net.BCrypt.GenerateSalt()),
+                    Profession = profession,
+                    //Grade = grade,
                     Nation = nation,
                     CreateTime = DateTime.Now,
                     ModifyTime = DateTime.Now

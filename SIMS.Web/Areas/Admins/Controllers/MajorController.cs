@@ -132,9 +132,9 @@ namespace SIMS.Web.Areas.Admins.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllMajor()
+        public JsonResult GetMajors()
         {
-            List<Department> list = DepartmentService.Instance.GetAll();
+            List<Major> list = MajorService.Instance.GetAll();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 

@@ -1,14 +1,19 @@
 ﻿
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">课程管理</h3>
+        <h3 class="panel-title">教师排课管理</h3>
     </div>
     <div class="panel-body">
         <div id="msgInfo"></div>
         <div class="row">
             <div class="col-sm-12">
-                <label for="ddlDepartmentForCourse">学院(系):：</label>
-                <select id="ddlDepartmentForCourse" style="width:200px;">
+                <label for="ddlCourseForCourseTeacher">课程:</label>
+                <select id="ddlCourseForCourseTeacher" style="width:200px;">
+                    <option value="0">--请选择--</option>
+                </select>
+
+                <label for="ddlTeacherForCourseTeacher">教师:</label>
+                <select id="ddlTeacherForCourseTeacher" style="width:200px;">
                     <option value="0">--请选择--</option>
                 </select>
 
@@ -17,9 +22,7 @@
 
             </div>
         </div>
-        <table class="table table-bordered table-striped" id="_CourseTable"></table>
+        <table class="table table-bordered table-striped" id="_CourseTeacherTable"></table>
     </div>
 </div>
-
-@*<script src="~/Areas/Admins/Scripts/CourseTeacher/courseteacher.js"></script>*@
-<script src="~/Areas/Admins/Scripts/Course/course.js"></script>
+<script src="~/Areas/Admins/Scripts/CourseTeacher/courseteacher.js"></script>

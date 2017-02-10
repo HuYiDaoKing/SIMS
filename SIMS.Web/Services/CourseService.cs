@@ -117,6 +117,14 @@ namespace SIMS.Web.Services
             }
         }
 
+        public List<Course> GetAll()
+        {
+            using (var context = new SIMSDbContext())
+            {
+                return context.Course.ToList();
+            }
+        }
+
         #endregion
 
         #region Create

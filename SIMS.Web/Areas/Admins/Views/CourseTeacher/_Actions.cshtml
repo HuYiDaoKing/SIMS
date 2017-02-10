@@ -1,0 +1,27 @@
+﻿@model SIMS.Web.Areas.Admins.ViewModels.CourseTeacherViewModel
+@using SIMS.Web.EntityDataModel;
+@using SIMS.Common;
+@using SIMS.Web.Services;
+@{
+    var id = Model.Id;
+    int? profession = 0;
+    if (this.CurrentAdminUser() == null)
+    {
+        profession = this.CurrentAdminUser().Profession;
+    }
+}
+
+<div class="hidden-sm hidden-xs action-buttons text-left btn-group-vertical">
+    @{
+        if (@profession == 0)
+        {
+            //超级管理员
+            <div class="form-group" style="margin-top:5px;">
+                <button type="button" class="btn btn-success   btn-xs" onclick="alert('修改!')">修改</button>
+            </div>
+            <div class="form-group" style="margin-top:5px;">
+                <button type="button" class="btn btn-success   btn-xs" onclick="alert('删除!')">删除</button>
+            </div>
+        }
+    }
+</div>

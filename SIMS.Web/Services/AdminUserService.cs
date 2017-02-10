@@ -63,6 +63,8 @@ namespace SIMS.Web.Services
             {
                 string departmentname = string.Empty;
                 string majorname = string.Empty;
+                string professionname = string.Empty;
+
                 Department department = DepartmentService.Instance.GetById(user.DepartmentId);
                 if (department != null)
                     departmentname = department.Name;
@@ -70,6 +72,19 @@ namespace SIMS.Web.Services
                 Major major = MajorService.Instance.GetById(user.MajorId);
                 if (major != null)
                     majorname = major.Name;
+
+                switch (user.Profession)
+                {
+                    case 0:
+                        professionname = "管理员";
+                        break;
+                    case 1:
+                        professionname = "学生";
+                        break;
+                    case 2:
+                        professionname = "教师";
+                        break;
+                }
 
                 list.Add(new AdminUserViewModel
                 {
@@ -81,11 +96,12 @@ namespace SIMS.Web.Services
                     MajorId = user.MajorId,
                     Passwordsalt = user.Passwordsalt,
                     Profession = user.Profession,
-                    Grade=user.Grade,
+                    Grade = user.Grade,
                     CreateTime = user.CreateTime,
                     ModifyTime = user.ModifyTime,
                     DepartmentName = departmentname,
-                    MajorName = majorname
+                    MajorName = majorname,
+                    ProfessionName=professionname
                 });
             }
             return list;
@@ -128,7 +144,7 @@ namespace SIMS.Web.Services
 
                 switch (profession)
                 {
-                    case 0:
+                    case 0://系统管理员
                         break;
                     case 1:
                         //年级+学院(系)+专业+MaxId
@@ -136,7 +152,7 @@ namespace SIMS.Web.Services
                         Department originalDepartment = DepartmentService.Instance.GetById(department);
                         Major originalMajor = MajorService.Instance.GetById(major);
 
-                        int maxMajorId = GetMaxId();
+                        int maxMajorId = GetMaxId(originalDepartment.Id);
                         if (maxMajorId < 10)
                         {
                             if (maxMajorId == 0)
@@ -154,6 +170,25 @@ namespace SIMS.Web.Services
                         }
                         break;
                     case 2:
+                        //教师
+                        //学院(系)+MaxId
+                        Department originalDepartment2 = DepartmentService.Instance.GetById(department);
+                        int maxId = GetMaxId(originalDepartment2.Id);
+                        if (maxId < 10)
+                        {
+                            if (maxId == 0)
+                                code = String.Format("{0}000{1}", originalDepartment2.Code, maxId + 1);
+                            else
+                                code = String.Format("{0}000{1}", originalDepartment2.Code, maxId);
+
+                        } if (10 <= maxId && maxId < 100)
+                        {
+                            code = String.Format("{0}00{1}", originalDepartment2.Code, maxId);
+                        }
+                        else if (100 <= maxId && maxId < 1000)
+                        {
+                            code = String.Format("{0}0{1}",originalDepartment2.Code,maxId);
+                        }
                         break;
                 }
 
@@ -166,19 +201,27 @@ namespace SIMS.Web.Services
         /// 自增ID
         /// </summary>
         /// <returns></returns>
-        public int GetMaxId()
+        public int GetMaxId(int departmentId)
         {
             using (var context = new SIMSDbContext())
             {
                 //int count = context.Department.Count();
-                int count = context.AdminUser.Count();
+                int count = context.AdminUser.Where(c=>c.DepartmentId==departmentId).Count();
                 if (count > 0)
                 {
                     //var q = (from c in context.Department select c.Id).Max();
                     //return (from c in context.Department select c.Id).Max();
-                    return (from c in context.AdminUser select c.Id).Max();
+                    return (from c in context.AdminUser where c.DepartmentId==departmentId select c.Id).Max();
                 }
                 return 0;
+            }
+        }
+        public List<AdminUser> GetTeachers()
+        {
+            List<AdminUser> list = new List<AdminUser>();
+            using (var context = new SIMSDbContext())
+            {
+                return context.AdminUser.Where(c => c.Profession == 2).ToList();
             }
         }
 
@@ -322,9 +365,9 @@ namespace SIMS.Web.Services
                     }
                     else
                     {
-                        iCount = context.AdminUser.Where(c=>c.Code==code && c.Id !=id).Count();
+                        iCount = context.AdminUser.Where(c => c.Code == code && c.Id != id).Count();
                     }
-                    
+
                     isExist = iCount > 0 ? true : false;
                 }
             }

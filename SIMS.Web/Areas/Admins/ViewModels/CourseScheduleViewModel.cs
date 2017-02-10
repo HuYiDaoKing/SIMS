@@ -6,10 +6,10 @@ using System.Web;
 
 namespace SIMS.Web.Areas.Admins.ViewModels
 {
-    public class AdminUserViewModel : AdminUser
+    public class CourseScheduleViewModel:CourseSchedule
     {
-        public string DepartmentName { get; set; }
+        public string CourseName { get; set; }
+        public string CourseTeacherName { get; set; }
         public string MajorName { get; set; }
-        public string ProfessionName { get; set; }
     }
 }

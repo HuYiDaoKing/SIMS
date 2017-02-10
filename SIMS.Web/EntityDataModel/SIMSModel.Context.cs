@@ -30,5 +30,8 @@ namespace SIMS.Web.EntityDataModel
         public virtual DbSet<AdminUser> AdminUser { get; set; }
         public virtual DbSet<StuCourse> StuCourse { get; set; }
         public virtual DbSet<Major> Major { get; set; }
+        public virtual DbSet<CourseTeacher> CourseTeacher { get; set; }
+        public virtual DbSet<CourseSchedule> CourseSchedule { get; set; }
+        public virtual DbSet<CourseScore> CourseScore { get; set; }
     }
 }

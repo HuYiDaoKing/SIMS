@@ -1,0 +1,24 @@
+﻿@model SIMS.Web.Areas.Admins.ViewModels.CourseScheduleViewModel
+@using SIMS.Web.EntityDataModel;
+@using SIMS.Common;
+@using SIMS.Web.Services;
+@{
+    var id = Model.Id;
+    int? profession = 0;
+    if (this.CurrentAdminUser() == null)
+    {
+        profession = this.CurrentAdminUser().Profession;
+    }
+}
+
+<div class="hidden-sm hidden-xs action-buttons text-left btn-group-vertical">
+    @{
+        if (@profession == 0)
+        {
+            //超级管理员
+            <div class="form-group" style="margin-top:5px;">
+                <button type="button" class="btn btn-success   btn-xs" onclick="alert('打成绩!')">打成绩</button>
+            </div>
+        }
+    }
+</div>

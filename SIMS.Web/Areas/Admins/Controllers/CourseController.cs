@@ -142,27 +142,12 @@ namespace SIMS.Web.Areas.Admins.Controllers
             }
         }
 
-        //[HttpPost]
-        //public JsonResult GetDepartment()
-        //{
-        //    List<Department> list = DepartmentService.Instance.GetAll();
-        //    return Json(list, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpPost]
-        //public JsonResult GetMajorsByDepartmentId(int departmentId = 0)
-        //{
-        //    if (departmentId == 0)
-        //    {
-        //        List<Department> departments = DepartmentService.Instance.GetAll();
-        //        return Json(departments, JsonRequestBehavior.AllowGet);
-        //    }
-        //    else
-        //    {
-        //        List<MajorViewModel> majors = MajorService.Instance.GetMajorsByDepartmentId(departmentId);
-        //        return Json(majors, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
+        [HttpPost]
+        public JsonResult GetCourses()
+        {
+            List<Course> list = CourseService.Instance.GetAll();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
 
         #region Private
 

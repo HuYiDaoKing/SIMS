@@ -180,17 +180,34 @@
     <Compile Include="Areas\Admins\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\Admins\Controllers\BaseController.cs" />
     <Compile Include="Areas\Admins\Controllers\CourseController.cs" />
+    <Compile Include="Areas\Admins\Controllers\CourseScheduleController.cs" />
+    <Compile Include="Areas\Admins\Controllers\CourseScoreController.cs" />
+    <Compile Include="Areas\Admins\Controllers\CourseTeacherController.cs" />
     <Compile Include="Areas\Admins\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Admins\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\Admins\Controllers\MajorController.cs" />
-    <Compile Include="Areas\Admins\Filters\AdminUserAuthentication.cs" />
+    <Compile Include="Areas\Admins\Controllers\SchoolTimeTableController.cs" />
+    <Compile Include="Areas\Admins\Controllers\TeacherScheduleController.cs" />
+    <Compile Include="Areas\Admins\Models\Filters\AdminUserAuthentication.cs" />
     <Compile Include="Areas\Admins\Models\LogOnModel.cs" />
     <Compile Include="Areas\Admins\ViewModels\AdminUserViewModel.cs" />
+    <Compile Include="Areas\Admins\ViewModels\CourseScheduleViewModel.cs" />
+    <Compile Include="Areas\Admins\ViewModels\CourseScoreViewModel.cs" />
+    <Compile Include="Areas\Admins\ViewModels\CourseTeacherViewModel.cs" />
     <Compile Include="Areas\Admins\ViewModels\MajorViewModel.cs" />
     <Compile Include="EntityDataModel\AdminUser.cs">
       <DependentUpon>SIMSModel.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityDataModel\Course.cs">
+      <DependentUpon>SIMSModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDataModel\CourseSchedule.cs">
+      <DependentUpon>SIMSModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDataModel\CourseScore.cs">
+      <DependentUpon>SIMSModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDataModel\CourseTeacher.cs">
       <DependentUpon>SIMSModel.tt</DependentUpon>
     </Compile>
     <Compile Include="EntityDataModel\Department.cs">
@@ -232,11 +249,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdminUserService.cs" />
     <Compile Include="Services\BaseRepository.cs" />
+    <Compile Include="Services\CourseScheduleService.cs" />
+    <Compile Include="Services\CourseScoreService.cs" />
     <Compile Include="Services\CourseService.cs" />
+    <Compile Include="Services\CourseTeacherService.cs" />
     <Compile Include="Services\DepartmentService.cs" />
     <Compile Include="Services\MajorService.cs" />
     <Compile Include="Services\ProfessionManager.cs" />
     <Compile Include="Services\StuCourseService.cs" />
+    <Compile Include="Services\CourseTeacherManager.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1155,9 +1176,13 @@
     <Content Include="Areas\Admins\assets\less\index.html" />
     <Content Include="Areas\Admins\assets\less\other-less\index.html" />
     <Content Include="Areas\Admins\assets\less\xenon-less\index.html" />
+    <Content Include="Areas\Admins\Scripts\CourseSchedule\courseschedule.js" />
+    <Content Include="Areas\Admins\Scripts\CourseTeacher\courseteacher.js" />
     <Content Include="Areas\Admins\Scripts\Course\course.js" />
     <Content Include="Areas\Admins\Scripts\Department\department.js" />
     <Content Include="Areas\Admins\Scripts\Major\major.js" />
+    <Content Include="Areas\Admins\Scripts\SchoolTimeTable\SchoolTimeTable.js" />
+    <Content Include="Areas\Admins\Scripts\TeacherSchedule\teacherschedule.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="EntityDataModel\SIMSModel.Context.tt">
@@ -1498,6 +1523,16 @@
     <Content Include="Areas\Admins\Views\Course\Index.cshtml" />
     <Content Include="Areas\Admins\Views\Course\_CourseModalPartial.cshtml" />
     <Content Include="Areas\Admins\Views\Course\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseTeacher\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseTeacher\_CourseTeacherModalPartial.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseTeacher\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseSchedule\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseSchedule\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\SchoolTimeTable\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseScore\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\CourseScore\_Actions.cshtml" />
+    <Content Include="Areas\Admins\Views\TeacherSchedule\Index.cshtml" />
+    <Content Include="Areas\Admins\Views\TeacherSchedule\_Actions.cshtml" />
     <None Include="Properties\PublishProfiles\SIMSConfig.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

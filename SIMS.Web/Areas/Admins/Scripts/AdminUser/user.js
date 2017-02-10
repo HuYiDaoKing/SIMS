@@ -84,7 +84,7 @@ function InitTable() {
             { "data": "Sex", "title": "性别" },
             { "data": "DepartmentName", "title": "系" },
             { "data": "MajorName", "title": "专业" },
-            { "data": "Profession", "title": "职业" },
+            { "data": "ProfessionName", "title": "职业" },
             { "data": "Grade", "title": "年级" },
             /*{
                 "data": "Id",

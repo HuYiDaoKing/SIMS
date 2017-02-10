@@ -85,6 +85,9 @@
     <!-- courseModalPartial） -->
     @Html.Partial("~/Areas/Admins/Views/Course/_CourseModalPartial.cshtml")
 
+    <!-- courseTeacherModalPartial） -->
+    @Html.Partial("~/Areas/Admins/Views/CourseTeacher/_CourseTeacherModalPartial.cshtml")
+
     <div class="page-container">
 
         <div class="sidebar-menu toggle-others fixed">
@@ -179,10 +182,16 @@
                             </li>
                         </ul>
                         <ul>
-
                             <li id="serviceAreasConfig">
                                 <a href="/Admins/Major/Index">
                                     <span class="title">专业管理</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <a href="/Admins/CourseTeacher/Index">
+                                    <span class="title">指派课程</span>
                                 </a>
                             </li>
                         </ul>
@@ -195,9 +204,23 @@
 
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/Admins/CourseSchedule/Index">
                             <i class="linecons-wallet"></i>
-                            <span class="title">学生选课</span>
+                            <span class="title">排课管理</span>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="/Admins/SchoolTimeTable/Index">
+                            <i class="linecons-wallet"></i>
+                            <span class="title">课表查询</span>
+                        </a>
+
+                    </li>
+                    <li>
+                        <a href="/Admins/TeacherSchedule/Index">
+                            <i class="linecons-wallet"></i>
+                            <span class="title">教师课程查询</span>
                         </a>
 
                     </li>

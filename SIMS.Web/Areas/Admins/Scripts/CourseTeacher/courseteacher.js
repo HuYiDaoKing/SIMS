@@ -2,15 +2,18 @@
 jQuery(document).ready(function ($) {
     InitTable();
 
-    BindDDLDepartment('ddlDepartmentForCourse');
-    BindDDLDepartment('ddlDepartmentForCourse2');
+    BindDDLCourse('ddlCourseForCourseTeacher');
+    BindDDLCourse('ddlCourseForCourseTeacher2');
+
+    BindDDLTeacher('ddlTeacherForCourseTeacher');
+    BindDDLTeacher('ddlTeacherForCourseTeacher2');
 
     $("#btnQuery").bind("click", function () {
         var param = {
-            //name: $("#sCourseName").val()
-            departmentId: $.trim($("#ddlDepartmentForCourse").val())
+            courseId: $.trim($("#ddlCourseForCourseTeacher").val()),
+            teacherId: $.trim($("#ddlTeacherForCourseTeacher").val())
         };
-        var tbTable = $("#_CourseTable").DataTable();
+        var tbTable = $("#_CourseTeacherTable").DataTable();
         tbTable.settings()[0].ajax.data = param;
         tbTable.ajax.reload();
     });
@@ -20,14 +23,15 @@ var table;
 
 //加载表数据
 function InitTable() {
-    table = $("#_CourseTable").dataTable({
+    table = $("#_CourseTeacherTable").dataTable({
         "processing": true,
         "serverSide": true,
         "ajax": {
-            "url": "/Admins/Course/GetDataTable",
+            "url": "/Admins/CourseTeacher/GetDataTable",
             "type": "POST",
             "data": {
-                departmentId: $.trim($("#ddlDepartmentForCourse").val())
+                courseId: $.trim($("#ddlCourseForCourseTeacher").val()),
+                teacherId: $.trim($("#ddlTeacherForCourseTeacher").val())
             },
             error: function (e) {
                 alert("异常:" + e.responseText);
@@ -52,19 +56,17 @@ function InitTable() {
             'infoFiltered': '(过滤总件数 _MAX_ 条)'
         },
         "columns": [
-            { "data": "Id", "title": "ID" },
-            { "data": "Code", "title": "编号" },
-            { "data": "Name", "title": "名称" },
-            { "data": "Score", "title": "学分" },
-            { "data": "Description", "title": "描述" },
+            //{ "data": "Id", "title": "ID" },
+            { "data": "Course", "title": "课程" },
+            { "data": "Teacher", "title": "老师" },
             { "data": "Actions", "title": "操作", "sWidth": "15%", "sClass": "text-center" }
         ]
     });
 }
 
-function BindDDLDepartment(id) {
+function BindDDLCourse(id) {
     $.ajax({
-        url: '/Admins/Department/GetDepartment',
+        url: '/Admins/Course/GetCourses',
         data: null,
         type: 'post',
         cache: false,
@@ -79,35 +81,53 @@ function BindDDLDepartment(id) {
             }
         },
         error: function (e) {
-            alert("绑定BindDDLDepartment异常:" + e.responseText);
+            alert("绑定BindDDLCourse异常:" + e.responseText);
         }
     });
 }
 
-function ShowModal(flag, id, name, departmentId, score, description) {
+//绑定教师
+function BindDDLTeacher(id) {
+    $.ajax({
+        url: '/Admins/AdminUser/GetTeachers',
+        data: null,
+        type: 'post',
+        cache: false,
+        dataType: 'json',
+        success: function (data) {
+            if (data != null) {
+                var htmlstr = "<option value='0'>--请选择--</option>";
+                for (var i = 0; i < data.length; i++) {
+                    htmlstr += "<option value='" + data[i].Id + "'>" + data[i].Name + "</option>";
+                }
+                $("#" + id).html(htmlstr);
+            }
+        },
+        error: function (e) {
+            alert("绑定BindDDLTeacher异常:" + e.responseText);
+        }
+    });
+}
+
+function ShowModal(flag, id, courseid, teacherid) {
     if (flag == 0) {
         //add
-        $('#CourseId').val('');
-        $('#CourseName').val('');
-        $('#CourseScore').val('');
-        $('#CourseDescription').val('');
-        $('#coursemodal .modal-title').html('添加');
-        $('#coursemodal').modal('show');
+        $('#CourseTeacherId').val('');
+        $('#courseteachermodal .modal-title').html('添加');
+        $('#courseteachermodal').modal('show');
     } else {
         //update
-        $('#CourseId').val(id);
-        $('#ddlDepartmentForCourse2').val(departmentId);
-        $('#CourseName').val(name);
-        $('#CourseScore').val(score);
-        $('#CourseDescription').val(description);
-        $('#coursemodal .modal-title').html('修改');
-        $('#coursemodal').modal('show');
+        $('#CourseTeacherId').val(id);
+        $('#ddlTeacherForCourseTeacher2').val(courseid);
+        $('#ddlCourseForCourseTeacher2').val(teacherid);
+        $('#courseteachermodal .modal-title').html('修改');
+        $('#courseteachermodal').modal('show');
     }
 }
 
 function AddOrUpdate() {
 
-    var id = $('#CourseId').val();
+    var id = $('#CourseTeacherId').val();
     if (id == 0) {
         Add();
     } else {
@@ -117,41 +137,31 @@ function AddOrUpdate() {
 
 //添加
 function Add() {
-    var departmentId = $.trim($("#ddlDepartmentForCourse2").val());
-    var name = $.trim($("#CourseName").val());
-    var score = $.trim($("#CourseScore").val())
-    var description = $.trim($("#CourseDescription").val())
+    var courseId = $.trim($("#ddlCourseForCourseTeacher2").val());
+    var teacherId = $.trim($("#ddlTeacherForCourseTeacher2").val());
 
-    if (departmentId == '' || departmentId == '0') {
-        alert('院系不能为空!');
+    if (courseId == '' || courseId == '0') {
+        alert('课程不能为空!');
         return;
     }
 
-    if (name == '') {
-        alert('课程名称不能为空!');
-        return;
-    }
-
-    if (score == '' || score == '0')
-    {
-        alert('课程学分不能为空!');
+    if (teacherId == '' || teacherId == '0') {
+        alert('教师不能为空!');
         return;
     }
 
     $.ajax({
-        url: '/Admins/Course/Add',
+        url: '/Admins/CourseTeacher/Add',
         data: {
-            departmentId: departmentId,
-            name: name,
-            score:score,
-            description: description
+            courseId: courseId,
+            teacherId: teacherId
         },
         type: 'post',
         cache: false,
         dataType: 'json',
         success: function (result) {
             if (result.Bresult) {
-                $('#coursemodal').modal('hide');
+                $('#courseteachermodal').modal('hide');
                 table.fnFilter();
             }
             else {
@@ -167,23 +177,16 @@ function Add() {
 
 //修改
 function Update() {
-    var departmentId = $.trim($("#ddlDepartmentForCourse2").val());
-    var name = $.trim($("#CourseName").val());
-    var score = $.trim($("#CourseScore").val())
-    var description = $.trim($("#CourseDescription").val())
+    var courseId = $.trim($("#ddlCourseForCourseTeacher2").val());
+    var teacherId = $.trim($("#ddlTeacherForCourseTeacher2").val());
 
-    if (departmentId == '' || departmentId == '0') {
-        alert('院系的编号和名称不能为空!');
+    if (courseId == '' || courseId == '0') {
+        alert('课程不能为空!');
         return;
     }
 
-    if (name == '') {
-        alert('课程名称不能为空!');
-        return;
-    }
-
-    if (score == '' || score == '0') {
-        alert('课程学分不能为空!');
+    if (teacherId == '' || teacherId == '0') {
+        alert('教师不能为空!');
         return;
     }
 
@@ -191,17 +194,15 @@ function Update() {
         url: '/Admins/Course/Update',
         data: {
             id: $.trim($("#CourseId").val()),
-            departmentId: departmentId,
-            name: name,
-            score:score,
-            description: description
+            courseId: courseId,
+            teacherId: teacherId
         },
         type: 'post',
         cache: false,
         dataType: 'json',
         success: function (result) {
             if (result.Bresult) {
-                $('#coursemodal').modal('hide');
+                $('#courseteachermodal').modal('hide');
                 table.fnFilter();
             }
             else {
